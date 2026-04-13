@@ -1,0 +1,11 @@
+# StagePhoto.ru AI Rules
+- ALWAYS follow docs/ai-context/*.md for design, tech, and routing decisions.
+- NEVER use container mx-auto or max-width constraints on main sections. Full-bleed layout is mandatory.
+- ALWAYS use Tailwind 4 syntax (@variant dark, @theme, CSS variables).
+- ALWAYS default language to Russian (RU). Support EN/EO via localStorage + system detection.
+- ALWAYS detect dark mode from OS preference first, then localStorage fallback.
+- USE Livewire 4 islands, #[Url], wire:model.live, and Alpine $store for global state.
+- USE Folio for routing: resources/views/pages/ maps directly to URLs.
+- PRIORITIZE performance: lazy images, debounced filters, CSS grid masonry, minimal JS.
+- NEVER generate promo fluff on homepage. Index = albums grid only.
+- WHEN context overflows, reference docs/ai-context/00_INDEX.md first, then inject specific files.
