@@ -8,7 +8,7 @@
     }
 @endphp
 
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" class="antialiased">
 <head>
     <meta charset="utf-8">
@@ -20,10 +20,10 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
 <!-- Header with Team Context -->
-<x-header :currentTeam="$team" />
+<x-frontend.header :currentTeam="$team" />
 
 <!-- Filter Bar -->
-<x-filter-bar :team="$team" />
+{{--<x-filter-bar :team="$team" />--}}
 
 <!-- Main Content Area -->
 <main class="w-full">
@@ -31,7 +31,7 @@
 </main>
 
 <!-- Footer -->
-<x-footer />
+<x-frontend.footer />
 
 @livewireScripts
 @folioScripts
