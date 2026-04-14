@@ -1,20 +1,19 @@
-# 🗺️ Folio Routing Structure
+# 🗺️ Livewire SPC structure
 
 ```
-resources/views/pages/
-├── index.blade.php                 ← / (albums grid only)
-├── album/
-│   ├── {album}.blade.php           ← /album/{slug}
-│   └── {album}/{photo}.blade.php   ← /album/{slug}/{photo-id} (lightbox)
-├── photographer/
-│   ├── {user}.blade.php            ← /photographer/{username}
-│   └── {user}/request.blade.php    ← /photographer/{username}/request
-├── bands/
-│   └── request-photographer.blade.php ← /bands/request
-├── submit/
-│   ├── album.blade.php             ← /submit/album
-│   └── photo.blade.php             ← /submit/photo
-└── ... (static: about, faq, policy, privacy live in footer, NOT nav)
+resources/views/
+├── layouts/
+│   └── app.blade.php                ← / (front-end layout)
+└── components/frontend/             ← / (top-level front-end livewire components folder)
+    ├── islands/                     ← / livewire 4 islends
+    │   └── album-grid.blade.php     ← album-grid livewire 4 island
+    ├── pages/                       ← / livewire 4 web site pages
+    │   └── home.blade.php           ← home page livewire 4 component
+    │   └── album-grid.blade.php     ← album-grid livewire 4 component
+    └── ui/                          ← / livewire 4 user interfaces
+        ├── album-card.blade.php     ← album-card livewire 4 components
+        ├── footer.blade.php         ← footer livewire 4 components
+        └── header.blade.php         ← header livewire 4 components
 ```
 
 ## 🔗 URL Rules

@@ -15,7 +15,6 @@
 - Photography enthusiasts (consumers)
 
 ## 🚫 Anti-Patterns
-- ❌ Hero banners with "We are the best"
 - ❌ Max-width containers (`container mx-auto`) on main content
 - ❌ Hardcoded light/dark mode without OS detection
 - ❌ JavaScript-heavy filtering (use Livewire + Alpine only)

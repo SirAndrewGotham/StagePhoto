@@ -18,7 +18,6 @@
 - Photography enthusiasts (consumers)
 
 ## 🚫 Anti-Patterns
-- ❌ Hero banners with "We are the best"
 - ❌ Max-width containers (`container mx-auto`) on main content
 - ❌ Hardcoded light/dark mode without OS detection
 - ❌ JavaScript-heavy filtering (use Livewire + Alpine only)
@@ -38,7 +37,6 @@
 - **Laravel**: 13.x
 - **Livewire**: 4.x
 - **Tailwind**: 4.x
-- **Routing**: `laravel-folio` (file-based)
 - **Frontend**: Livewire 4 + Alpine.js 3
 - **Styling**: Tailwind CSS 4
 - **DB**: MySQL 8+ or PostgreSQL 15+
@@ -47,7 +45,6 @@
 ## 🧩 Key Patterns
 - **Livewire 4**: Use `#[Url]`, `wire:model.live.debounce.300ms`, islands for pagination
 - **Alpine.js**: `$store` for global state, `x-data` for local interactions
-- **Folio**: `resources/views/pages/` → direct URL mapping. No route files needed.
 - **Tailwind 4**: `@variant dark`, `@theme` in CSS, `prefers-color-scheme` native support
 - **Images**: Intervention Image v3 → WebP/AVIF, `loading="lazy"`, `srcset`
 
@@ -171,23 +168,22 @@
 - **Validation**: Alpine + Livewire `wire:submit`
 - **Feedback**: Success toast, email notification
 
-# 🗺️ Folio Routing Structure
+# 🗺️ Livewire SPC structure
 
 ```
-resources/views/pages/
-├── index.blade.php                 ← / (albums grid only)
-├── album/
-│   ├── {album}.blade.php           ← /album/{slug}
-│   └── {album}/{photo}.blade.php   ← /album/{slug}/{photo-id} (lightbox)
-├── photographer/
-│   ├── {user}.blade.php            ← /photographer/{username}
-│   └── {user}/request.blade.php    ← /photographer/{username}/request
-├── bands/
-│   └── request-photographer.blade.php ← /bands/request
-├── submit/
-│   ├── album.blade.php             ← /submit/album
-│   └── photo.blade.php             ← /submit/photo
-└── ... (static: about, faq, policy, privacy live in footer, NOT nav)
+resources/views/
+├── layouts/
+│   └── app.blade.php                ← / (front-end layout)
+└── components/frontend/             ← / (top-level front-end livewire components folder)
+    ├── islands/                     ← / livewire 4 islends
+    │   └── album-grid.blade.php     ← album-grid livewire 4 island
+    ├── pages/                       ← / livewire 4 web site pages
+    │   └── home.blade.php           ← home page livewire 4 component
+    │   └── album-grid.blade.php     ← album-grid livewire 4 component
+    └── ui/                          ← / livewire 4 user interfaces
+        ├── album-card.blade.php     ← album-card livewire 4 components
+        ├── footer.blade.php         ← footer livewire 4 components
+        └── header.blade.php         ← header livewire 4 components
 ```
 
 ## 🔗 URL Rules

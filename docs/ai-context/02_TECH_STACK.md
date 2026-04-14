@@ -5,7 +5,6 @@
 - **Laravel**: 13.x
 - **Livewire**: 4.x
 - **Tailwind**: 4.x
-- **Routing**: `laravel-folio` (file-based)
 - **Frontend**: Livewire 4 + Alpine.js 3
 - **Styling**: Tailwind CSS 4
 - **DB**: MySQL 8+ or PostgreSQL 15+
@@ -14,7 +13,6 @@
 ## 🧩 Key Patterns
 - **Livewire 4**: Use `#[Url]`, `wire:model.live.debounce.300ms`, islands for pagination
 - **Alpine.js**: `$store` for global state, `x-data` for local interactions
-- **Folio**: `resources/views/pages/` → direct URL mapping. No route files needed.
 - **Tailwind 4**: `@variant dark`, `@theme` in CSS, `prefers-color-scheme` native support
 - **Images**: Intervention Image v3 → WebP/AVIF, `loading="lazy"`, `srcset`
 

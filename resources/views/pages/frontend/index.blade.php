@@ -1,4 +1,5 @@
-@page
+@page('Title')
+
 <?php
 use function Laravel\Folio\render;
 use Illuminate\View\View;

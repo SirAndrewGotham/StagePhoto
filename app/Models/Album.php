@@ -38,6 +38,12 @@ class Album extends Model
         static::creating(fn ($album) => $album->slug = Str::slug($album->title));
     }
 
+    protected $withCount = ['photos']; // Eager-load photo count
+
+    public function getPhotosCountAttribute() {
+        return $this->photos_count ?? $this->photos->count();
+    }
+
     public function photographer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'photographer_id');
