@@ -54,8 +54,8 @@ new class extends Component {
             <div class="flex items-center gap-4">
                 <span x-text="t('madeIn')"></span>
                 <button @click="toggleDarkMode()" class="flex items-center gap-1 hover:text-stage-600 transition-colors">
-                    <span x-show="!darkMode" x-text="t('light')"></span>
-                    <span x-show="darkMode" x-cloak x-text="t('dark')"></span>
+                    <span x-show="!$store.darkMode.enabled" x-text="t('light')"></span>
+                    <span x-show="$store.darkMode.enabled" x-text="t('dark')"></span>
                 </button>
             </div>
         </div>
