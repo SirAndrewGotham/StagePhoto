@@ -483,16 +483,30 @@ new class extends Component {
 
                         <!-- Photo Comments Section -->
                         <div class="flex flex-col h-full max-h-[80vh] overflow-hidden">
-                            <!-- Photo Info -->
+                            <!-- Photo Info with Request Button -->
                             <div class="p-4 border-b dark:border-gray-700">
                                 <div class="flex justify-between items-start">
                                     <div>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">Photo {{ $this->photos->search(fn($p) => $p->id == $selectedPhoto) + 1 }} of {{ $this->photos->count() }}</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                                            Photo {{ $this->photos->search(fn($p) => $p->id == $selectedPhoto) + 1 }} of {{ $this->photos->count() }}
+                                        </p>
                                         <p class="text-xs text-gray-400 mt-1">{{ $this->currentPhoto->views }} views</p>
                                     </div>
-                                    @if($this->currentPhoto->is_featured)
-                                        <span class="px-2 py-1 text-xs bg-yellow-500 text-white rounded-full">Featured</span>
-                                    @endif
+                                    <div class="flex gap-2">
+                                        @if($this->currentPhoto->is_featured)
+                                            <span class="px-2 py-1 text-xs bg-yellow-500 text-white rounded-full">Featured</span>
+                                        @endif
+                                        <!-- Request Button for Photo -->
+                                        <button
+                                            wire:click="openRequestModal"
+                                            class="px-3 py-1 text-xs bg-stage-600 text-white rounded-lg hover:bg-stage-700 transition-colors flex items-center gap-1"
+                                        >
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                            </svg>
+                                            {{ __('album.request_this_photo') }}
+                                        </button>
+                                    </div>
                                 </div>
                                 @if($this->currentPhoto->description)
                                     <p class="mt-3 text-sm text-gray-700 dark:text-gray-300">{{ $this->currentPhoto->description }}</p>

@@ -90,7 +90,7 @@ return [
     'reply' => 'Reply',
     'no_comments_yet' => 'No comments yet. Be the first!',
     'photo' => 'Photo',
-    'of' => 'of',
     'featured' => 'Featured',
     'add_photo_comment' => 'Add a comment to this photo...',
+    'request_this_photo' => 'Request This Photo',
 ];

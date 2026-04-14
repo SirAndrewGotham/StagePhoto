@@ -93,4 +93,5 @@ return [
     'photo' => 'Foto',
     'featured' => 'Elstara',
     'add_photo_comment' => 'Aldoni komenton al ĉi tiu foto...',
+    'request_this_photo' => 'Request This Photo',
 ];

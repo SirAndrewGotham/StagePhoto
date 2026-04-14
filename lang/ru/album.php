@@ -93,4 +93,5 @@ return [
     'photo' => 'Фото',
     'featured' => 'Избранное',
     'add_photo_comment' => 'Добавить комментарий к этому фото...',
+    'request_this_photo' => 'Request This Photo',
 ];
