@@ -28,3 +28,377 @@
 - **Fields**: Message, date range, venue, budget (optional)
 - **Validation**: Alpine + Livewire `wire:submit`
 - **Feedback**: Success toast, email notification
+
+## 🌍 Language Switcher with Livewire 4 Integration
+
+### Alpine.js Store (Translations)
+Place this in your main layout file (`resources/views/layouts/app.blade.php`):
+
+```javascript
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.store('i18n', {
+        locale: localStorage.getItem('language') || 'ru',
+        
+        translations: {
+            ru: {
+                // Navigation
+                search: 'Поиск групп, площадок...',
+                signIn: 'Войти',
+                submitWork: 'Добавить работу',
+                
+                // Filters
+                all: 'Все',
+                rock: 'Рок',
+                metal: 'Метал',
+                theater: 'Театр',
+                festivals: 'Фестивали',
+                jazz: 'Джаз',
+                classical: 'Классика',
+                electronic: 'Электроника',
+                folk: 'Фолк',
+                
+                // Sort options
+                mostRecent: '📅 Недавние',
+                mostViewed: '🔥 Популярные',
+                topRated: '⭐ Лучшие',
+                newPhotographers: '👥 Новые авторы',
+                
+                // Album grid
+                latestAlbums: 'Последние альбомы',
+                albums: 'альбомов',
+                photos: 'фото',
+                viewAlbum: 'Смотреть альбом',
+                request: 'Заказать',
+                loadMore: 'Загрузить ещё',
+                showing: 'Показано',
+                of: 'из',
+                
+                // Footer
+                platform: 'Платформа',
+                community: 'Сообщество',
+                legal: 'Правовая информация',
+                connect: 'Контакты',
+                submitWorkLink: 'Добавить работу',
+                forBands: 'Для групп',
+                forTheaters: 'Для театров',
+                photographerGuide: 'Гид фотографа',
+                featuredArtists: 'Избранные авторы',
+                monthlyContest: 'Ежемесячный конкурс',
+                workshops: 'Мастер-классы',
+                blog: 'Блог',
+                privacyPolicy: 'Политика конфиденциальности',
+                termsOfService: 'Условия использования',
+                copyright: 'Авторские права',
+                cookieSettings: 'Настройки cookie',
+                telegram: 'Telegram',
+                vkontakte: 'ВКонтакте',
+                instagram: 'Instagram',
+                emailSupport: 'Email поддержка',
+                madeIn: 'Сделано с ❤️ в Москве',
+                light: '☀️ Светлая',
+                dark: '🌙 Тёмная',
+            },
+            en: {
+                // Navigation
+                search: 'Search bands, venues...',
+                signIn: 'Sign In',
+                submitWork: 'Submit Work',
+                
+                // Filters
+                all: 'All',
+                rock: 'Rock',
+                metal: 'Metal',
+                theater: 'Theater',
+                festivals: 'Festivals',
+                jazz: 'Jazz',
+                classical: 'Classical',
+                electronic: 'Electronic',
+                folk: 'Folk',
+                
+                // Sort options
+                mostRecent: '📅 Most Recent',
+                mostViewed: '🔥 Most Viewed',
+                topRated: '⭐ Top Rated',
+                newPhotographers: '👥 New Photographers',
+                
+                // Album grid
+                latestAlbums: 'Latest Albums',
+                albums: 'albums',
+                photos: 'photos',
+                viewAlbum: 'View Album',
+                request: 'Request',
+                loadMore: 'Load More',
+                showing: 'Showing',
+                of: 'of',
+                
+                // Footer
+                platform: 'Platform',
+                community: 'Community',
+                legal: 'Legal',
+                connect: 'Connect',
+                submitWorkLink: 'Submit Work',
+                forBands: 'For Bands',
+                forTheaters: 'For Theaters',
+                photographerGuide: 'Photographer Guide',
+                featuredArtists: 'Featured Artists',
+                monthlyContest: 'Monthly Contest',
+                workshops: 'Workshops',
+                blog: 'Blog',
+                privacyPolicy: 'Privacy Policy',
+                termsOfService: 'Terms of Service',
+                copyright: 'Copyright',
+                cookieSettings: 'Cookie Settings',
+                telegram: 'Telegram',
+                vkontakte: 'VKontakte',
+                instagram: 'Instagram',
+                emailSupport: 'Email Support',
+                madeIn: 'Made with ❤️ in Moscow',
+                light: '☀️ Light',
+                dark: '🌙 Dark',
+            },
+            eo: {
+                // Navigation
+                search: 'Serĉi bandojn, venuejojn...',
+                signIn: 'Ensaluti',
+                submitWork: 'Sendi Verkon',
+                
+                // Filters
+                all: 'Ĉiuj',
+                rock: 'Roko',
+                metal: 'Metalo',
+                theater: 'Teatro',
+                festivals: 'Festivaloj',
+                jazz: 'Ĵazo',
+                classical: 'Klasika',
+                electronic: 'Elektronika',
+                folk: 'Folko',
+                
+                // Sort options
+                mostRecent: '📅 Plej Novaj',
+                mostViewed: '🔥 Plej Viditaj',
+                topRated: '⭐ Plej Bonaj',
+                newPhotographers: '👥 Novaj Fotistoj',
+                
+                // Album grid
+                latestAlbums: 'Plej Novaj Albumoj',
+                albums: 'albumoj',
+                photos: 'fotoj',
+                viewAlbum: 'Vidi Albumon',
+                request: 'Peti',
+                loadMore: 'Ŝargi Pli',
+                showing: 'Montrataj',
+                of: 'de',
+                
+                // Footer
+                platform: 'Platformo',
+                community: 'Komunumo',
+                legal: 'Jura',
+                connect: 'Konekti',
+                submitWorkLink: 'Sendi Verkon',
+                forBands: 'Por Bandoj',
+                forTheaters: 'Por Teatroj',
+                photographerGuide: 'Gvidilo por Fotistoj',
+                featuredArtists: 'Elstaraj Artistoj',
+                monthlyContest: 'Monata Konkurso',
+                workshops: 'Laborejoj',
+                blog: 'Blogo',
+                privacyPolicy: 'Privateca Politiko',
+                termsOfService: 'Kondiĉoj de Servo',
+                copyright: 'Aŭtorrajto',
+                cookieSettings: 'Kuketaj Agordoj',
+                telegram: 'Telegram',
+                vkontakte: 'VKontakte',
+                instagram: 'Instagram',
+                emailSupport: 'Retpoŝta Subteno',
+                madeIn: 'Farita kun ❤️ en Moskvo',
+                light: '☀️ Hela',
+                dark: '🌙 Malhela',
+            }
+        },
+        
+        t(key) {
+            return this.translations[this.locale]?.[key] || this.translations.ru[key] || key;
+        },
+        
+        setLocale(lang) {
+            if (!this.translations[lang]) return;
+            
+            this.locale = lang;
+            localStorage.setItem('language', lang);
+            document.documentElement.lang = lang;
+            
+            // Notify Livewire components
+            window.dispatchEvent(new CustomEvent('language-changed', { 
+                detail: { language: lang } 
+            }));
+        }
+    });
+});
+</script>
+```
+
+### Language Switcher Component (`⚡lang-switcher.blade.php`)
+
+```blade
+<?php
+use Livewire\Component;
+
+new class extends Component {
+    public function render()
+    {
+        return <<<'HTML'
+            <div class="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl p-1 gap-1">
+                <button 
+                    @click="$store.i18n.setLocale('ru')"
+                    class="lang-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all"
+                    :class="{ 
+                        'active bg-stage-600 text-white': $store.i18n.locale === 'ru',
+                        'text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50': $store.i18n.locale !== 'ru'
+                    }"
+                    title="Русский"
+                >
+                    RU
+                </button>
+                <button 
+                    @click="$store.i18n.setLocale('en')"
+                    class="lang-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all"
+                    :class="{ 
+                        'active bg-stage-600 text-white': $store.i18n.locale === 'en',
+                        'text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50': $store.i18n.locale !== 'en'
+                    }"
+                    title="English"
+                >
+                    EN
+                </button>
+                <button 
+                    @click="$store.i18n.setLocale('eo')"
+                    class="lang-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all"
+                    :class="{ 
+                        'active bg-stage-600 text-white': $store.i18n.locale === 'eo',
+                        'text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50': $store.i18n.locale !== 'eo'
+                    }"
+                    title="Esperanto"
+                >
+                    EO
+                </button>
+            </div>
+        HTML;
+    }
+};
+?>
+```
+
+### Livewire Component Listening for Language Changes
+
+```php
+<?php
+use Livewire\Component;
+use Livewire\Attributes\On;
+
+new class extends Component {
+    public $albums = [];
+    public $selectedGenre = 'all';
+    
+    #[On('language-changed')]
+    public function refreshForLanguage($language)
+    {
+        // Re-fetch data with new locale
+        // For example, load translated album titles or descriptions
+        $this->loadAlbums();
+        
+        // Force component refresh
+        $this->dispatch('$refresh');
+    }
+    
+    public function loadAlbums()
+    {
+        // Load albums with current locale
+        $this->albums = Album::withTranslation(app()->getLocale())->get();
+    }
+    
+    public function render()
+    {
+        return <<<'HTML'
+            <div>
+                <h2 x-text="$store.i18n.t('latestAlbums')"></h2>
+                
+                @foreach($albums as $album)
+                    <div>{{ $album->getTranslation('title', app()->getLocale()) }}</div>
+                @endforeach
+            </div>
+        HTML;
+    }
+};
+?>
+```
+
+### Usage in Blade Templates
+
+```blade
+<!-- Anywhere in your Blade files -->
+<div x-data>
+    <!-- Static text translation -->
+    <h1 x-text="$store.i18n.t('latestAlbums')"></h1>
+    
+    <!-- Dynamic attribute translation -->
+    <input 
+        type="search" 
+        :placeholder="$store.i18n.t('search')"
+        class="border rounded"
+    >
+    
+    <!-- Conditional translation -->
+    <button x-text="$store.i18n.t($store.theme.dark ? 'dark' : 'light')"></button>
+    
+    <!-- Pluralization example -->
+    <span x-text="`${count} ${$store.i18n.t('albums')}`"></span>
+</div>
+```
+
+### Adding New Translations
+
+1. **Add key to all language objects** in the Alpine store:
+```javascript
+translations: {
+    ru: { newKey: 'Russian text' },
+    en: { newKey: 'English text' },
+    eo: { newKey: 'Esperanto text' }
+}
+```
+
+2. **Use in templates**:
+```blade
+<span x-text="$store.i18n.t('newKey')"></span>
+```
+
+3. **For Livewire translations** (server-side), use Laravel's localization:
+```php
+// In PHP
+__('messages.welcome')
+
+// In Blade
+{{ __('messages.welcome') }}
+```
+
+### Testing Translations
+
+```javascript
+// Test translation switching
+test('language changes from RU to EN', async ({ page }) => {
+    await page.click('button:has-text("EN")');
+    const htmlLang = await page.getAttribute('html', 'lang');
+    expect(htmlLang).toBe('en');
+    
+    const searchPlaceholder = await page.getAttribute('input[type="search"]', 'placeholder');
+    expect(searchPlaceholder).toBe('Search bands, venues...');
+});
+
+// Test localStorage persistence
+test('language persists after reload', async ({ page }) => {
+    await page.click('button:has-text("EN")');
+    await page.reload();
+    const activeButton = await page.locator('.lang-btn.active').textContent();
+    expect(activeButton).toBe('EN');
+});
+```

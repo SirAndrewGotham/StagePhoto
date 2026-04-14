@@ -181,7 +181,7 @@ resources/views/
     │   └── home.blade.php           ← home page livewire 4 component
     │   └── album-grid.blade.php     ← album-grid livewire 4 component
     └── ui/                          ← / livewire 4 user interfaces
-        ├── album-card.blade.php     ← album-card livewire 4 components
+   [qwen-web.md](qwen-web.md)     ├── album-card.blade.php     ← album-card livewire 4 components
         ├── footer.blade.php         ← footer livewire 4 components
         └── header.blade.php         ← header livewire 4 components
 ```
