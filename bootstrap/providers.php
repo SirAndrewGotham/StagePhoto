@@ -8,7 +8,7 @@ use App\Providers\FortifyServiceProvider;
 
 return [
     AppServiceProvider::class,
-//    FolioServiceProvider::class,
-//    Laravel\Folio\FolioServiceProvider::class,
+    //    FolioServiceProvider::class,
+    //    Laravel\Folio\FolioServiceProvider::class,
     FortifyServiceProvider::class,
 ];

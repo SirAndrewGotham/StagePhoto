@@ -19,6 +19,5 @@ new class extends Component {
             @livewire('islands.albums-grid')
         </div>
     </main>
-
     @livewire('ui.footer')
 </div>
