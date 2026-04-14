@@ -13,8 +13,8 @@ new class extends Component {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>StagePhoto.ru — {{ __('Концертная и театральная фотография') }}</title>
-    <meta name="description" content="{{ __('Откройте для себя потрясающую концертную и театральную фотографию.') }}">
+    <title>StagePhoto.ru — {{ __('album.title') }}</title>
+    <meta name="description" content="{{ __('album.description') }}">
 
     <!-- Tailwind CSS 4 -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -39,9 +39,6 @@ new class extends Component {
             }
         }
     </script>
-
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -108,9 +105,8 @@ new class extends Component {
     function app() {
         return {
             darkMode: false,
-            language: '{{ app()->getLocale() }}',
             init() {
-                // Check system preference for dark mode
+                // Dark mode initialization
                 if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                     this.darkMode = true;
                     document.documentElement.classList.add('dark');
@@ -122,14 +118,12 @@ new class extends Component {
                     }
                 }
 
-                // Listen for system changes
                 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
                     if (localStorage.getItem('darkMode') === null) {
                         this.darkMode = e.matches;
                     }
                 });
 
-                // Watch for dark mode changes
                 this.$watch('darkMode', val => {
                     if (val) {
                         document.documentElement.classList.add('dark');
@@ -143,20 +137,14 @@ new class extends Component {
                 this.darkMode = !this.darkMode;
             },
             setLanguage(lang) {
-                // Set cookie via fetch API
-                fetch(`/lang/${lang}`, {
-                    method: 'GET',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                }).then(() => {
-                    // Reload the page to apply new language
-                    window.location.reload();
-                }).catch(() => {
-                    // Fallback: direct cookie set and reload
-                    document.cookie = `language=${lang}; path=/; max-age=31536000`;
-                    window.location.reload();
-                });
+                // Set cookie with proper attributes
+                document.cookie = `language=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+
+                // Also store in localStorage for debugging
+                localStorage.setItem('language', lang);
+
+                // Reload the page to apply new language
+                window.location.reload();
             }
         }
     }

@@ -6,13 +6,12 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
 
 class SetLocale
 {
     public function handle(Request $request, Closure $next)
     {
-        // Check cookie first, then session, then default
+        // Get locale from cookie, then session, then default
         $locale = $request->cookie('language');
 
         if (! $locale) {
@@ -35,10 +34,8 @@ class SetLocale
         // Store in session for future requests
         session(['locale' => $locale]);
 
-        // Add to response cookies if not present
-        if (! $request->cookie('language')) {
-            Cookie::queue('language', $locale, 60 * 24 * 365); // 1 year
-        }
+        // Also set in view for debugging
+        view()->share('currentLocale', $locale);
 
         return $next($request);
     }

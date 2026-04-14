@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Models\Album;
 use App\Models\Category;
+use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -209,6 +210,16 @@ class AlbumFactory extends Factory
         return $this->afterCreating(function (Album $album) use ($count) {
             $categories = Category::inRandomOrder()->limit($count)->pluck('id');
             $album->categories()->attach($categories);
+        });
+    }
+
+    public function withPhotos(int $count = 5): static
+    {
+        return $this->afterCreating(function (Album $album) use ($count) {
+            Photo::factory()
+                ->count($count)
+                ->forAlbum($album)
+                ->create();
         });
     }
 

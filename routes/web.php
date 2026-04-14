@@ -3,6 +3,13 @@
 use App\Http\Middleware\EnsureTeamMembership;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/debug-lang', fn () => [
+    'cookie' => request()->cookie('language'),
+    'session' => session('locale'),
+    'app_locale' => app()->getLocale(),
+    'all_cookies' => request()->cookies->all(),
+]);
+
 // Language switching route
 Route::get('/lang/{locale}', function ($locale) {
     $supportedLocales = ['ru', 'en', 'eo'];
@@ -23,6 +30,11 @@ Route::get('/lang/{locale}', function ($locale) {
 })->name('lang.switch');
 
 Route::livewire('/', 'frontend.pages.⚡home')->name('home');
+
+// Photo routes
+Route::livewire('/photo/{photo}', 'frontend.pages.photo-show')->name('photo.show');
+
+// Album routes
 Route::livewire('/album/{album:slug}', 'frontend.pages.⚡album-show')->name('album.show');
 
 Route::prefix('{current_team}')

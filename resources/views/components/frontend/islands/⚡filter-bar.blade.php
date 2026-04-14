@@ -10,16 +10,37 @@ new class extends Component {
     public $selectedGenre = 'all';
 
     #[Url(as: 'sort', history: true)]
-    public $sortBy = 'most_recent';
+    public $sortBy = 'mostRecent';
 
     #[Url(as: 'type', history: true)]
     public $selectedType = 'all';
+
+    #[Url(as: 'q', history: true)]
+    public $search = '';
 
     protected $categoryService;
 
     public function boot(CategoryService $categoryService): void
     {
         $this->categoryService = $categoryService;
+    }
+
+    /**
+     * Helper function to translate category names
+     * Uses translation key "album.categories.{slug}" with fallback to database name
+     */
+    private function transCategory(array $category)
+    {
+        $key = "album.categories.{$category['slug']}";
+        $translation = __($key);
+
+        // If translation exists (doesn't return the key itself), use it
+        if ($translation !== $key) {
+            return $translation;
+        }
+
+        // Otherwise return the category name from database
+        return $category['name'];
     }
 
     #[Computed]
@@ -37,16 +58,16 @@ new class extends Component {
             // Add "All" option
             $genreList[] = [
                 'slug' => 'all',
-                'name' => __('all'),
+                'name' => __('album.all'),
                 'icon' => '🎯',
                 'type' => null,
             ];
 
-            // Add categories
+            // Add categories from database
             foreach ($categories as $category) {
                 $genreList[] = [
                     'slug' => $category['slug'],
-                    'name' => __($category['slug']), // Translate using lang file
+                    'name' => $this->transCategory($category),
                     'icon' => $category['icon'],
                     'type' => $category['type'],
                 ];
@@ -57,15 +78,15 @@ new class extends Component {
         } catch (\Exception) {
             // Fallback if database isn't ready
             return [
-                ['slug' => 'all', 'name' => __('all'), 'icon' => '🎯'],
-                ['slug' => 'rock', 'name' => __('rock'), 'icon' => '🎸'],
-                ['slug' => 'metal', 'name' => __('metal'), 'icon' => '🤘'],
-                ['slug' => 'theater', 'name' => __('theater'), 'icon' => '🎭'],
-                ['slug' => 'festivals', 'name' => __('festivals'), 'icon' => '🎪'],
-                ['slug' => 'jazz', 'name' => __('jazz'), 'icon' => '🎷'],
-                ['slug' => 'classical', 'name' => __('classical'), 'icon' => '🎻'],
-                ['slug' => 'electronic', 'name' => __('electronic'), 'icon' => '🎧'],
-                ['slug' => 'folk', 'name' => __('folk'), 'icon' => '🪕'],
+                ['slug' => 'all', 'name' => __('album.all'), 'icon' => '🎯'],
+                ['slug' => 'rock', 'name' => __('album.rock'), 'icon' => '🎸'],
+                ['slug' => 'metal', 'name' => __('album.metal'), 'icon' => '🤘'],
+                ['slug' => 'theater', 'name' => __('album.theater'), 'icon' => '🎭'],
+                ['slug' => 'festivals', 'name' => __('album.festivals'), 'icon' => '🎪'],
+                ['slug' => 'jazz', 'name' => __('album.jazz'), 'icon' => '🎷'],
+                ['slug' => 'classical', 'name' => __('album.classical'), 'icon' => '🎻'],
+                ['slug' => 'electronic', 'name' => __('album.electronic'), 'icon' => '🎧'],
+                ['slug' => 'folk', 'name' => __('album.folk'), 'icon' => '🪕'],
             ];
         }
     }
@@ -74,20 +95,9 @@ new class extends Component {
     public function categoryTypes(): array
     {
         return [
-            ['value' => 'all', 'label' => __('type_all'), 'icon' => '🎯'],
-            ['value' => 'music', 'label' => __('type_music'), 'icon' => '🎸'],
-            ['value' => 'theater', 'label' => __('type_theater'), 'icon' => '🎭'],
-        ];
-    }
-
-    #[Computed]
-    public function sortOptions(): array
-    {
-        return [
-            ['value' => 'most_recent', 'label' => __('most_recent')],
-            ['value' => 'most_viewed', 'label' => __('most_viewed')],
-            ['value' => 'top_rated', 'label' => __('top_rated')],
-            ['value' => 'new_photographers', 'label' => __('new_photographers')],
+            ['value' => 'all', 'label' => __('album.type_all'), 'icon' => '🎯'],
+            ['value' => 'music', 'label' => __('album.type_music'), 'icon' => '🎸'],
+            ['value' => 'theater', 'label' => __('album.type_theater'), 'icon' => '🎭'],
         ];
     }
 
@@ -109,6 +119,11 @@ new class extends Component {
     {
         $this->sortBy = $value;
         $this->dispatch('sort-changed', sort: $value);
+    }
+
+    public function updatedSearch(): void
+    {
+        $this->dispatch('search-changed', search: $this->search);
     }
 };
 
@@ -158,18 +173,17 @@ new class extends Component {
                 wire:change="updateSort($event.target.value)"
                 class="px-3 py-1.5 text-xs lg:text-sm border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-stage-500 focus:border-transparent min-w-[140px]"
             >
-                @foreach($this->sortOptions as $option)
-                    <option value="{{ $option['value'] }}" {{ $sortBy === $option['value'] ? 'selected' : '' }}>
-                        {{ $option['label'] }}
-                    </option>
-                @endforeach
+                <option value="mostRecent" {{ $sortBy === 'mostRecent' ? 'selected' : '' }}>{{ __('album.most_recent') }}</option>
+                <option value="mostViewed" {{ $sortBy === 'mostViewed' ? 'selected' : '' }}>{{ __('album.most_viewed') }}</option>
+                <option value="topRated" {{ $sortBy === 'topRated' ? 'selected' : '' }}>{{ __('album.top_rated') }}</option>
+                <option value="newPhotographers" {{ $sortBy === 'newPhotographers' ? 'selected' : '' }}>{{ __('album.new_photographers') }}</option>
             </select>
 
             <!-- Mobile Search -->
             <div class="md:hidden flex-1 min-w-[100px]">
                 <input
                     type="search"
-                    placeholder="{{ __('search') }}"
+                    placeholder="{{ __('album.search') }}"
                     wire:model.live.debounce.300ms="search"
                     class="w-full pl-9 pr-4 py-1.5 text-sm border border-gray-300 dark:border-gray-700 rounded-xl bg-gray-100 dark:bg-gray-800 focus:ring-2 focus:ring-stage-500"
                 >

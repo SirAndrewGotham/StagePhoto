@@ -48,5 +48,8 @@
     "dark": "🌙 Dark",
     "type_all": "All Types",
     "type_music": "Music",
-    "type_theater": "Theater"
+    "type_theater": "Theater",
+    "ratings": "ratings",
+    "rate_this_album": "Rate this album",
+    "your_rating": "Your rating"
 }

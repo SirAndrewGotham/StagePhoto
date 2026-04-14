@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('photos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('album_id')->constrained()->cascadeOnDelete();
-            $table->string('original_path');
-            $table->string('optimized_path')->nullable();
-            $table->string('thumbnail_path');
-            $table->string('caption')->nullable();
-            $table->unsignedSmallInteger('sort_order')->default(0);
+            $table->foreignId('album_id')->constrained()->onDelete('cascade');
+            $table->string('filename');
+            $table->string('path');
+            $table->string('thumbnail_path')->nullable();
+            $table->text('description')->nullable();
+            $table->integer('sort_order')->default(0);
+            $table->boolean('is_featured')->default(false);
+            $table->integer('views')->default(0);
             $table->timestamps();
-            $table->index('album_id');
         });
     }
 

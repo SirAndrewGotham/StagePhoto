@@ -177,6 +177,23 @@ class AlbumSeeder extends Seeder
             if ($category) {
                 $album->categories()->attach($category->id);
             }
+
+            $album->comments()->createMany([
+                [
+                    'user_id' => $photographer->id,
+                    'content' => 'This was an amazing show! Check out these highlights.',
+                    'is_approved' => true,
+                    'likes' => random_int(5, 30),
+                    'created_at' => now()->subDays(random_int(1, 10)),
+                ],
+                [
+                    'user_id' => $photographer->id,
+                    'content' => 'The lighting was incredible that night.',
+                    'is_approved' => true,
+                    'likes' => random_int(0, 15),
+                    'created_at' => now()->subDays(random_int(1, 10)),
+                ],
+            ]);
         }
 
         $this->command->info('Albums seeded successfully!');

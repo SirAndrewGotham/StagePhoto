@@ -34,12 +34,15 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        $this->call(TagSeeder::class);
+
         // Create 50 random albums using the factory
         Album::factory()
             ->count(50)
             ->published()
             ->forPhotographer($photographer)
             ->withRandomCategories(1) // Attach 1 random category to each album
+            ->withPhotos(random_int(5, 20))
             ->create();
 
         // Create 10 featured albums
@@ -49,6 +52,7 @@ class DatabaseSeeder extends Seeder
             ->published()
             ->forPhotographer($photographer)
             ->withRandomCategories(1)
+            ->withPhotos(random_int(5, 20))
             ->create();
 
         // Create 5 NEW albums
@@ -59,6 +63,7 @@ class DatabaseSeeder extends Seeder
             ->published()
             ->forPhotographer($photographer)
             ->withRandomCategories(1)
+            ->withPhotos(random_int(5, 20))
             ->create();
 
         // Create 10 highly rated albums
@@ -68,6 +73,7 @@ class DatabaseSeeder extends Seeder
             ->published()
             ->forPhotographer($photographer)
             ->withRandomCategories(1)
+            ->withPhotos(random_int(5, 20))
             ->create();
 
         // Create 10 popular albums
@@ -77,6 +83,7 @@ class DatabaseSeeder extends Seeder
             ->published()
             ->forPhotographer($photographer)
             ->withRandomCategories(1)
+            ->withPhotos(random_int(5, 20))
             ->create();
 
         // Create specific genre albums
@@ -96,6 +103,7 @@ class DatabaseSeeder extends Seeder
             ->unpublished()
             ->forPhotographer($photographer)
             ->withRandomCategories(1)
+            ->withPhotos(random_int(5, 20))
             ->create();
 
         $this->command->info('Albums seeded successfully!');
@@ -106,8 +114,10 @@ class DatabaseSeeder extends Seeder
             GenreSeeder::class,
             UserSeeder::class,
             //            AlbumSeeder::class,
-            PhotoSeeder::class,
+            //            PhotoSeeder::class,
             BookingRequestSeeder::class,
+            CommentSeeder::class,
+            RatingSeeder::class,
         ]);
     }
 }
