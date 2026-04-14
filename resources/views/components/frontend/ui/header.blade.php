@@ -12,7 +12,8 @@
                 <button class="px-2.5 py-1 text-xs font-medium rounded-md text-gray-600 dark:text-gray-300 hover:bg-white/50">EO</button>
             </div>
             {{-- Dark Toggle --}}
-            <button @click="$dispatch('toggle-dark')" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-stage-800 transition" aria-label="Toggle dark mode">🌙</button>
+{{--            <button @click="$dispatch('toggle-dark')" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-stage-800 transition" aria-label="Toggle dark mode">🌙</button>--}}
+            <button @click="$store.darkMode.toggle()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-stage-800 transition" aria-label="Toggle dark mode">🌙</button>
         </div>
     </div>
 </header>

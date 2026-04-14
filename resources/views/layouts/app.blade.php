@@ -10,7 +10,7 @@
 
         @livewireStyles
     </head>
-    <body>
+    <body class="bg-[var(--color-stage-50)] dark:bg-[var(--color-stage-900)] text-gray-900 dark:text-gray-100">
 
         {{ $slot }}
 
