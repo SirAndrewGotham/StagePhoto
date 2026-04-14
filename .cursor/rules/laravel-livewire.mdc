@@ -1,0 +1,53 @@
+---
+description: Laravel 13 + Livewire 4 specific rules for StagePhoto.ru
+globs: app/Livewire/**/*,resources/views/components/frontend/**/*.blade.php
+---
+
+# Livewire 4 Best Practices
+
+## Component Organization
+- Store all Livewire SFC in `resources/views/components/frontend/`
+- Use kebab-case for component names in Blade: `@livewire('frontend.album-card')`
+- Use PascalCase for component classes internally
+
+## Property Management
+- Use public properties for reactive data
+- Use `#[Computed]` for expensive operations that don't change often
+- Avoid storing Eloquent models directly; use IDs instead
+
+## Event Communication
+- Use `$this->dispatch()` for upward communication
+- Use `#[On]` attribute for listening to events
+- Prefix custom events with domain: `album-created`, `filter-changed`
+
+## Performance Optimization
+- Use `wire:key` in loops with unique identifiers
+- Use `wire:model.live` for real-time updates only when needed
+- Use `data-loading` attributes for loading states
+
+## Testing Requirements
+- Write tests for all public methods
+- Test event dispatching and handling
+- Test computed properties with different states
+
+## Example Validation Rule
+```blade
+<?php
+new class extends Component {
+    public $album = [
+        'title' => '',
+        'description' => '',
+    ];
+
+    public function save()
+    {
+        $this->validate([
+            'album.title' => 'required|string|max:255',
+            'album.description' => 'nullable|string|max:1000',
+        ]);
+
+        // save logic
+    }
+};
+?>
+```

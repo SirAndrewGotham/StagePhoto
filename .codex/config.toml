@@ -1,4 +1,37 @@
-[mcp_servers.laravel-boost]
-command = "php"
-args = ["artisan", "boost:mcp"]
-cwd = "/Users/andrewgotham/Sites/Laravel/StagePhoto"
+version: 1
+project:
+  name: StagePhoto
+  description: Concert and theater photography platform
+
+components:
+  livewire:
+    version: 4
+    type: sfc
+    path: resources/views/components/frontend
+    pattern: "⚡*.blade.php"
+
+  alpine:
+    version: 3
+    for: client-state
+
+  tailwind:
+    version: 4
+    customColors: stage
+
+workflows:
+  create-component:
+    command: php artisan livewire:make frontend/{name} --type=sfc
+
+  run-tests:
+    command: php artisan test
+
+  code-fix:
+    command: ./vendor/bin/pint
+
+  refactor:
+    command: vendor/bin/rector process app --dry-run
+
+documentation:
+  apidoc: docs/api.md
+  components: docs/components.md
+  architecture: docs/architecture.md

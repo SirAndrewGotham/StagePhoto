@@ -1,0 +1,34 @@
+{
+    "project": {
+        "name": "StagePhoto",
+        "type": "laravel-livewire",
+        "framework": "laravel@13",
+        "livewire": "4.x"
+    },
+    "paths": {
+        "components": "resources/views/components/frontend",
+        "layouts": "resources/views/layouts",
+        "pages": "resources/views/pages",
+        "tests": "tests/Feature/Livewire"
+    },
+    "naming": {
+        "componentPrefix": "⚡",
+        "componentSuffix": "",
+        "useEmoji": true
+    },
+    "testing": {
+        "enabled": true,
+        "framework": "pest",
+        "livewireTesting": true
+    },
+    "codeQuality": {
+        "pint": true,
+        "rector": true,
+        "phpstan": false
+    },
+    "features": {
+        "darkMode": true,
+        "translations": ["ru", "en", "eo"],
+        "realTime": false
+    }
+}

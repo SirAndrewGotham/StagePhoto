@@ -1,0 +1,24 @@
+# GitHub CODEOWNERS for StagePhoto.ru
+
+# Core team owns everything
+* @SirAndrewGotham
+
+# Livewire components ownership
+/resources/views/components/frontend/ @SirAndrewGotham
+
+# Configuration files
+/config/ @SirAndrewGotham
+
+# Routes
+/routes/ @SirAndrewGotham
+
+# Tests
+/tests/ @SirAndrewGotham
+
+# AI context files
+/.claude/ @SirAndrewGotham
+/.cursor/ @SirAndrewGotham
+/.gemini/ @SirAndrewGotham
+/AGENTS.md @SirAndrewGotham
+/CLAUDE.md @SirAndrewGotham
+/GEMINI.md @SirAndrewGotham
