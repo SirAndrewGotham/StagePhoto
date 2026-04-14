@@ -1,4 +1,13 @@
-{{-- FOOTER --}}
+<?php
+
+use Livewire\Component;
+
+new class extends Component {
+    //
+};
+
+?>
+
 <footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 py-8 mt-12">
     <div class="px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">

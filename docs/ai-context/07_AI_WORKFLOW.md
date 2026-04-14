@@ -5,7 +5,7 @@
 You are building StagePhoto.ru. Follow these rules:
 1. Read: docs/ai-context/01_PROJECT_VISION.md
 2. Read: docs/ai-context/03_DESIGN_SYSTEM.md
-3. Read: docs/ai-context/06_ROUTING_FOLIO.md
+3. Read: docs/ai-context/06_ROUTING.md
 Task: [Describe exact component/page]
 Output: [Specify file path, framework, constraints]
 ```

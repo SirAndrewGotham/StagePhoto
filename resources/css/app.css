@@ -9,8 +9,10 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    /* Updated Font to Inter from your design */
+    --font-sans: 'Inter', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
 
+    /* Base Zinc Colors */
     --color-zinc-50: #fafafa;
     --color-zinc-100: #f5f5f5;
     --color-zinc-200: #e5e5e5;
@@ -23,21 +25,32 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
+    /* --- StagePhoto Custom Colors --- */
+    --color-stage-50: #fff8f0;
+    --color-stage-100: #ffedd5;
+    --color-stage-500: #f97316;
+    --color-stage-600: #ea580c;
+    --color-stage-900: #1e1b4b;
+    --color-spotlight: #fef08a;
+
+    /* Flux UI Accent Mapping */
+    --color-accent: var(--color-stage-600);
+    --color-accent-content: var(--color-stage-600);
     --color-accent-foreground: var(--color-white);
+
+    /* Custom Animations */
+    --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
+        --color-accent: var(--color-stage-500);
+        --color-accent-content: var(--color-stage-500);
+        --color-accent-foreground: var(--color-zinc-950);
     }
 }
 
 @layer base {
-
     *,
     ::after,
     ::before,
@@ -45,22 +58,68 @@
     ::file-selector-button {
         border-color: var(--color-gray-200, currentColor);
     }
+
+    /* Standard Alpine.js cloak */
+    [x-cloak] { display: none !important; }
 }
 
-[data-flux-field]:not(ui-radio, ui-checkbox) {
-    @apply grid gap-2;
+/* --- Masonry & Custom Components --- */
+@layer components {
+    .masonry-grid {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+
+    @media (min-width: 640px) { .masonry-grid { gap: 1.25rem; } }
+    @media (min-width: 1024px) { .masonry-grid { gap: 1.5rem; } }
+    @media (min-width: 1440px) { .masonry-grid { gap: 1.75rem; } }
+    @media (min-width: 1920px) { .masonry-grid { gap: 2rem; } }
+
+    .album-card {
+        break-inside: avoid;
+    }
+
+    .album-cover {
+        transition: transform 0.5s ease;
+    }
+
+    /* Using Tailwind 4's internal hover logic */
+    .group:hover .album-cover {
+        transform: scale(1.05);
+    }
+
+    .filter-pills::-webkit-scrollbar {
+        height: 4px;
+    }
+    .filter-pills::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .filter-pills::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 2px;
+    }
+
+    .dark .filter-pills::-webkit-scrollbar-thumb {
+        background: #475569;
+    }
+
+    /* Language switcher active state */
+    .lang-btn.active {
+        @apply bg-stage-600 text-white;
+    }
+    .dark .lang-btn.active {
+        @apply bg-stage-500 text-white;
+    }
 }
 
-[data-flux-label] {
-    @apply  !mb-0 !leading-tight;
-}
+/* Flux UI Overrides */
+[data-flux-field]:not(ui-radio, ui-checkbox) { @apply grid gap-2; }
+[data-flux-label] { @apply !mb-0 !leading-tight; }
 
 input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
-
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */

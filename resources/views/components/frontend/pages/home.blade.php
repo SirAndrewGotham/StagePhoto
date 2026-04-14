@@ -2,19 +2,23 @@
 
 use Livewire\Component;
 
-new class extends Component
-{
-    //
+new class extends Component {
+//    public function render()
+//    {
+//        return view('layouts::app');
+//    }
 };
+
 ?>
 
-<div class="w-full min-h-screen bg-white dark:bg-stage-900 transition-colors duration-200">
-    {{-- 🔝 Header --}}
-    <x-frontend.ui.header />
+<div>
+    @livewire('ui.header')
+    @livewire('islands.filter-bar')
+    <main>
+        <div class="px-4 sm:px-6 lg:px-8 py-6">
+            @livewire('islands.albums-grid')
+        </div>
+    </main>
 
-    {{-- 🖼️ Full-Width Grid --}}
-    <x-frontend.islands.albums-grid />
-
-    {{-- 🦶 Footer --}}
-    <x-frontend.ui.footer />
+    @livewire('ui.footer')
 </div>
