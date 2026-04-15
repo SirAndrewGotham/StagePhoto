@@ -20,18 +20,33 @@
 | `05_COMPONENT_SPEC.md` | Album card, header, footer, request modal, language switcher | Before component creation |
 | `06_ROUTING.md` | File structure, route registration, naming conventions | Before creating new pages |
 | `07_AI_WORKFLOW.md` | Prompt templates, anti-patterns, testing checklist | For optimal AI collaboration |
+| `08_IMAGE_PROCESSING.md` | Image dimensions, formats, watermarks, processing workflow | When implementing uploads |
 
 ## 🚀 Quick Start for New AI Session
 
-**Read these 3 files first:**
+**Read these 4 files first:**
 1. `01_PROJECT_VISION.md` - Understand what we're building
 2. `03_DESIGN_SYSTEM.md` - Understand layout constraints (no containers!)
 3. `06_ROUTING.md` - Understand where components live
+4. `08_IMAGE_PROCESSING.md` - Understand image requirements
 
-**Then reference as needed:**
-- Building a component → `05_COMPONENT_SPEC.md`
-- Adding filters → `04_UX_RULES.md`
-- Performance work → `02_TECH_STACK.md`
+## Current Implementation Status
+
+| Feature | Status |
+|---------|--------|
+| Album grid with infinite scroll | ✅ Complete |
+| Filter bar (genre, type, sort) | ✅ Complete |
+| Album show page | ✅ Complete |
+| Photo modal with comments | ✅ Complete |
+| Rating system | ✅ Complete |
+| Like system for comments | ✅ Complete |
+| Request system | ✅ Complete |
+| Multi-language (RU, EN, EO) | ✅ Complete |
+| Dark mode | ✅ Complete |
+| WebP conversion | ⏳ Pending |
+| Watermark application | ⏳ Pending |
+| Photographer upload interface | ⏳ Pending |
+| Admin dashboard | ⏳ Pending |
 
 ## ⚡ Critical Rules (Never Break)
 

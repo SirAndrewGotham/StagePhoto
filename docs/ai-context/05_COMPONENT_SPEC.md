@@ -1,11 +1,12 @@
 # 🧩 Component Specifications
 
-## `<x-album-card>`
-- **Props**: `$album`, `$photographer`, `$showRequestBtn = true`
-- **Structure**: Cover → hover overlay → title → meta → actions
-- **States**: `✨ NEW`, `🔥 FEATURED`, `👤 YOUR WORK` badges
-- **Hover**: Scale cover 1.05x, fade overlay, show photographer + date
-- **Actions**: `View Album` (primary), `Request` (secondary, auth-gated)
+### `<x-album-card>`
+- **Props**: `$album`, `$showRequestBtn = true`
+- **Structure**: Entire card is clickable (no separate buttons)
+- **Navigation**: `wire:navigate` for SPA-style transitions
+- **Image**: Album cover square (800x800 WebP)
+- **Hover**: Scale cover 1.05x, fade overlay
+- **No Buttons on Card** - Request button moved to album page sidebar
 
 ## Filter Bar (`<x-filter-bar>`)
 - **Layout**: Flex wrap, pills + dropdown + search
@@ -28,6 +29,38 @@
 - **Fields**: Message, date range, venue, budget (optional)
 - **Validation**: Alpine + Livewire `wire:submit`
 - **Feedback**: Success toast, email notification
+
+### Album Show Page (`⚡album-show.blade.php`)
+- **Header Image**: Hero cover (2000x800 WebP)
+- **Photo Grid**: Thumbnails (600x600 WebP, square crop)
+- **Photo Modal**: Full-size photo (1600px max side, WebP with watermark)
+- **Request Button Location**:
+    - Sidebar (general album requests)
+    - Photo modal (specific photo requests)
+- **Rating System**: 5-star rating with user persistence
+- **Comment System**: Threaded comments with likes
+
+### Request Modal (`⚡request-modal.blade.php`)
+- **Request Types**:
+    - Personal Use (wallpaper, social media)
+    - High Resolution Photos
+    - Print Permission
+    - Commercial Use
+    - Hire Photographer for Event
+- **Conditional Fields**: Event date, venue, budget (for hire requests)
+- **Auto-fill**: Pre-fills name/email for logged-in users
+- **Storage**: Saves to `requests` table with status tracking
+
+### Rating System
+- **Database**: `ratings` table (polymorphic)
+- **Average Rating**: Stored as decimal, displayed with 1 decimal
+- **User Rating**: Stars highlight based on user's previous rating
+- **Guest Handling**: Prompts login when unauthenticated
+
+### Like System
+- **Database**: `likes` table (polymorphic)
+- **Toggle**: Click to like/unlike comments
+- **Visual**: Heart icon fills on liked state
 
 ## 🌍 Language Switcher with Livewire 4 Integration
 

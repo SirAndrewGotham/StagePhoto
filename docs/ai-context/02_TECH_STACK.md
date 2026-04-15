@@ -234,3 +234,95 @@ Livewire.dump()
     </div>
 @endforeach
 ```
+
+## 🖼️ Image Processing & Dimensions
+
+### Image Variants & Specifications
+
+| Image Type | Purpose | Dimensions | Aspect Ratio | Format | Watermark |
+|------------|---------|------------|--------------|--------|-----------|
+| **Album Cover (Grid)** | Album card display | 800 x 800 px | 1:1 Square | WebP | Yes |
+| **Album Cover (Hero)** | Album page header | 2000 x 800 px | 2.5:1 Landscape | WebP | No |
+| **Photo Thumbnail** | Grid preview | 600 x 600 px | 1:1 Square (center crop) | WebP | Yes |
+| **Full-size Photo** | Lightbox modal | 1600px on longest side | Original (3:2, 4:3, 16:9) | WebP | Yes |
+| **Original Upload** | Archival master | User-uploaded original | Original | Preserved | No |
+
+### Image Processing Workflow
+
+```php
+use Intervention\Image\ImageManager;
+
+// 1. Save original
+$originalPath = $photo->store('originals');
+
+// 2. Generate full-size (1600px max side, WebP, with watermark)
+$fullImage = ImageManager::make($uploadedFile)
+    ->resize(1600, null, function($constraint) {
+        $constraint->aspectRatio();
+        $constraint->upsize();
+    })
+    ->encode('webp', 85);
+// Apply watermark
+// Save to storage
+
+// 3. Generate thumbnail (600x600 center crop, WebP, with watermark)
+$thumbnail = ImageManager::make($uploadedFile)
+    ->fit(600, 600)
+    ->encode('webp', 80);
+// Apply watermark
+// Save to storage
+
+// 4. Generate album cover variants (when setting as cover)
+// - Grid cover: 800x800 square, WebP, with watermark
+// - Hero cover: 2000x800 landscape, WebP, no watermark
+```
+
+### Storage Directory Structure
+
+```
+storage/app/public/
+├── originals/
+│   └── {album_id}/
+│       └── {photo_id}_original.jpg
+├── photos/
+│   └── {album_id}/
+│       ├── {photo_id}_full.webp
+│       └── {photo_id}_thumb.webp
+└── albums/
+    └── {album_id}/
+        ├── cover_square.webp
+        └── cover_hero.webp
+```
+
+### Dependencies Required
+
+```bash
+composer require intervention/image
+```
+
+### Configuration
+
+**`config/image.php`**
+```php
+return [
+    'driver' => 'imagick', // or 'gd'
+    'quality' => [
+        'full' => 85,
+        'thumbnail' => 80,
+        'cover' => 85,
+    ],
+    'dimensions' => [
+        'album_cover_square' => [800, 800],
+        'album_cover_hero' => [2000, 800],
+        'photo_thumbnail' => [600, 600],
+        'photo_full' => [1600, null], // null = auto-calculate
+    ],
+    'watermark' => [
+        'enabled' => true,
+        'path' => 'watermarks/stagephoto.png',
+        'position' => 'bottom-right',
+        'padding' => 10,
+        'opacity' => 30,
+    ],
+];
+```

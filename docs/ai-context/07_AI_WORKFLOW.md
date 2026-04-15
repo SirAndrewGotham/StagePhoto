@@ -68,6 +68,46 @@ globs: resources/views/components/frontend/**/*.blade.php
 - ❌ Using `@livewire('component')` without proper namespace
 - ❌ Forgetting `⚡` prefix for SFC files
 - ❌ Using Spatie packages (project policy)
+- ❌ **Putting buttons on album cards** (entire card should be clickable, Request button in sidebar)
+- ❌ **Storing original images without generating WebP variants**
+- ❌ **Skipping watermark on display images**
+- ❌ **Using JPEG/PNG for web delivery** (use WebP instead)
+
+## ✅ Implemented Features (Current State)
+
+### Core Features
+- [x] Album grid with infinite scroll
+- [x] Full-width responsive masonry layout
+- [x] Dark mode with system preference detection
+- [x] Multi-language support (RU, EN, EO) via Laravel localization
+- [x] Album show page with photo grid
+- [x] Photo modal with lightbox navigation
+- [x] Comment system (albums and photos)
+- [x] Rating system (5-star)
+- [x] Like system for comments
+- [x] Tag system for albums
+- [x] Category system with translations
+- [x] Request system for photographers
+
+### Image Processing (To Be Implemented)
+- [ ] WebP conversion on upload
+- [ ] Multiple size variants generation
+- [ ] Watermark application
+- [ ] Album cover variants (square + hero)
+
+### Database Tables Created
+| Table | Purpose |
+|-------|---------|
+| `albums` | Album metadata |
+| `photos` | Photo metadata and paths |
+| `categories` | Music/theater categories |
+| `category_translations` | Multi-language category names |
+| `tags` | Album tags |
+| `taggables` | Polymorphic tag relationships |
+| `comments` | Threaded comments with likes |
+| `ratings` | 5-star ratings (polymorphic) |
+| `likes` | Comment likes (polymorphic) |
+| `requests` | Photographer request forms |
 
 ## ✅ Prompt Templates
 

@@ -2,33 +2,35 @@
 
 ## Component Discovery Path
 
+### Component Discovery Path
 Configured in `config/livewire.php`:
-
 ```php
 'paths' => [
     resource_path('views/components/frontend'),
 ],
-'component_file_naming' => 'emoji', // ⚡ prefix for SFC
+'component_file_naming' => 'emoji',
 ```
 
-## Actual File Structure
-
+### Current File Structure
 ```
 resources/views/components/frontend/
-├── ⚡header.blade.php              ← Header SFC
-├── ⚡filter-bar.blade.php          ← Filter bar SFC  
-├── ⚡album-grid.blade.php          ← Album grid island
-├── ⚡album-card.blade.php          ← Album card UI component
-├── ⚡footer.blade.php              ← Footer SFC
-└── ⚡request-modal.blade.php       ← Request modal SFC (when created)
+├── ui/
+│   ├── ⚡album-card.blade.php          ← Album card (entire card clickable)
+│   ├── ⚡header.blade.php               ← Main navigation
+│   ├── ⚡footer.blade.php               ← Site footer
+│   └── ⚡request-modal.blade.php        ← Request modal form
+├── islands/
+│   ├── ⚡filter-bar.blade.php           ← Filter bar (genre, type, sort)
+│   └── ⚡album-grid.blade.php           ← Album grid island
+└── pages/
+    └── ⚡home.blade.php                 ← Home page
 ```
 
-## Page Components (Full-page Livewire)
-
+### Page Components
 ```
 resources/views/livewire/pages/
-├── ⚡home.blade.php                ← Home page (mounted at '/')
-└── ⚡album-show.blade.php          ← Album detail page
+├── ⚡home.blade.php                     ← Home page (mounted at '/')
+└── (Album show is in components/frontend/ui/ as it's embedded)
 ```
 
 ## Route Registration
@@ -44,6 +46,16 @@ Route::livewire('/album/{slug}', 'pages::album-show');
 // Embedded components (no route needed)
 // Used via @livewire('frontend.album-grid')
 ```
+
+### Event Communication (Current)
+| Event | Dispatched From | Listened By | Purpose |
+|-------|----------------|-------------|---------|
+| `open-request-modal` | Album show, Photo modal | Request modal | Open request form |
+| `genre-changed` | Filter bar | Album grid | Filter albums by genre |
+| `sort-changed` | Filter bar | Album grid | Sort albums |
+| `type-changed` | Filter bar | Album grid | Filter by music/theater |
+| `album-rated` | Album show | N/A | Refresh rating display |
+| `comment-likes-updated` | Album show | N/A | Update like counts |
 
 ## Component Usage in Blade
 
