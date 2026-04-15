@@ -6,14 +6,16 @@ namespace Database\Seeders;
 
 use App\Models\Album;
 use App\Models\Category;
+use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class AlbumSeeder extends Seeder
 {
     public function run(): void
     {
-        // First, make sure you have a test user
+        // Get or create test photographer
         $photographer = User::first();
         if (! $photographer) {
             $photographer = User::create([
@@ -23,15 +25,35 @@ class AlbumSeeder extends Seeder
             ]);
         }
 
-        $albums = [
+        // Create "Unsorted" album for the photographer
+        Album::create([
+            'title' => 'Unsorted',
+            'slug' => 'unsorted-'.$photographer->id,
+            'description' => 'Automatically created album for unsorted photos. Move photos to other albums to organize them.',
+            'cover_image' => null,
+            'cover_image_square' => null,
+            'cover_image_hero' => null,
+            'photographer_id' => $photographer->id,
+            'venue' => null,
+            'event_date' => now(),
+            'photo_count' => 0,
+            'rating' => 0,
+            'views' => 0,
+            'is_published' => false,
+            'is_unsorted' => true,
+            'badge' => '📁 UNSORTED',
+            'badge_gradient' => 'from-gray-500 to-gray-600',
+        ]);
+
+        // Create regular published albums
+        $albumsData = [
             [
                 'title' => 'Arctic Monkeys • Live at Luzhniki',
                 'slug' => 'arctic-monkeys-live-luzhniki',
                 'description' => 'Full concert coverage of Arctic Monkeys at Luzhniki Stadium',
-                'cover_image' => 'https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=600&q=80',
                 'venue' => 'Luzhniki Stadium, Moscow',
                 'event_date' => '2025-10-15',
-                'photo_count' => 24,
+                'photo_count' => 5,
                 'rating' => 4.9,
                 'views' => 1234,
                 'badge' => '✨ NEW',
@@ -42,10 +64,9 @@ class AlbumSeeder extends Seeder
                 'title' => 'Swan Lake • Bolshoi Theater Premiere',
                 'slug' => 'swan-lake-bolshoi-premiere',
                 'description' => 'Opening night of Swan Lake at the historic Bolshoi Theater',
-                'cover_image' => 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80',
                 'venue' => 'Bolshoi Theater, Moscow',
                 'event_date' => '2025-11-02',
-                'photo_count' => 45,
+                'photo_count' => 5,
                 'rating' => 5.0,
                 'views' => 3456,
                 'badge' => null,
@@ -56,10 +77,9 @@ class AlbumSeeder extends Seeder
                 'title' => 'Park Live Festival 2025 • Day 2',
                 'slug' => 'park-live-festival-2025-day2',
                 'description' => 'Highlights from the second day of Park Live Festival',
-                'cover_image' => 'https://images.unsplash.com/photo-1459749411177-0473ef716170?auto=format&fit=crop&w=600&q=80',
                 'venue' => 'Park Live, Moscow',
                 'event_date' => '2025-08-20',
-                'photo_count' => 203,
+                'photo_count' => 5,
                 'rating' => 4.8,
                 'views' => 5678,
                 'badge' => '🔥 FEATURED',
@@ -70,10 +90,9 @@ class AlbumSeeder extends Seeder
                 'title' => 'Igor Butman Quartet • Intimate Session',
                 'slug' => 'igor-butman-jazz-session',
                 'description' => 'Exclusive jazz session with Igor Butman Quartet',
-                'cover_image' => 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80',
                 'venue' => 'Jazz Club, Moscow',
                 'event_date' => '2025-09-05',
-                'photo_count' => 18,
+                'photo_count' => 5,
                 'rating' => 4.7,
                 'views' => 890,
                 'badge' => null,
@@ -81,96 +100,40 @@ class AlbumSeeder extends Seeder
                 'category_slug' => 'jazz',
             ],
             [
-                'title' => 'Slayer Tribute • Final Tour Moscow',
-                'slug' => 'slayer-tribute-final-tour',
-                'description' => 'Tribute concert for Slayer\'s final tour in Moscow',
-                'cover_image' => 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80',
-                'venue' => 'Arena Moscow',
-                'event_date' => '2025-10-30',
-                'photo_count' => 67,
-                'rating' => 4.9,
-                'views' => 2345,
-                'badge' => null,
-                'badge_gradient' => null,
-                'category_slug' => 'metal',
-            ],
-            [
-                'title' => 'Hamlet • Taganka Theater Revival',
-                'slug' => 'hamlet-taganka-theater',
-                'description' => 'Modern interpretation of Shakespeare\'s Hamlet',
-                'cover_image' => 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2f4ae?auto=format&fit=crop&w=600&q=80',
-                'venue' => 'Taganka Theater, Moscow',
-                'event_date' => '2025-11-10',
-                'photo_count' => 31,
-                'rating' => 4.8,
-                'views' => 1234,
-                'badge' => null,
-                'badge_gradient' => null,
-                'category_slug' => 'drama',
-            ],
-            [
                 'title' => 'Molchat Doma • 16 Tons Club',
-                'slug' => 'molchat-doma-16-tons',
+                'slug' => 'molchat-doma-16-tons-club',
                 'description' => 'Post-punk night with Molchat Doma',
-                'cover_image' => 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
                 'venue' => '16 Tons Club, Moscow',
                 'event_date' => '2025-11-18',
-                'photo_count' => 39,
+                'photo_count' => 5,
                 'rating' => 5.0,
                 'views' => 4567,
                 'badge' => '👤 YOUR WORK',
                 'badge_gradient' => 'from-emerald-500 to-teal-500',
                 'category_slug' => 'rock',
             ],
-            [
-                'title' => 'Valery Gergiev • Tchaikovsky Symphony No. 5',
-                'slug' => 'valery-gergiev-tchaikovsky',
-                'description' => 'Full symphony performance by Mariinsky Orchestra',
-                'cover_image' => 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=600&q=80',
-                'venue' => 'Tchaikovsky Hall, Moscow',
-                'event_date' => '2025-10-08',
-                'photo_count' => 28,
-                'rating' => 4.9,
-                'views' => 3456,
-                'badge' => null,
-                'badge_gradient' => null,
-                'category_slug' => 'classical',
-            ],
-            [
-                'title' => 'Nina Kraviz • Garage Live Set',
-                'slug' => 'nina-kraviz-garage-set',
-                'description' => 'Electronic music night with Nina Kraviz',
-                'cover_image' => 'https://images.unsplash.com/photo-1516450360452-93659f5a3f21?auto=format&fit=crop&w=600&q=80',
-                'venue' => 'Garage Club, Moscow',
-                'event_date' => '2025-11-22',
-                'photo_count' => 52,
-                'rating' => 4.8,
-                'views' => 2345,
-                'badge' => null,
-                'badge_gradient' => null,
-                'category_slug' => 'electronic',
-            ],
-            [
-                'title' => 'Pelageya • Open Air Folk Fest',
-                'slug' => 'pelageya-folk-fest',
-                'description' => 'Folk music festival featuring Pelageya',
-                'cover_image' => 'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?auto=format&fit=crop&w=600&q=80',
-                'venue' => 'Folk Festival, Moscow',
-                'event_date' => '2025-09-28',
-                'photo_count' => 34,
-                'rating' => 4.7,
-                'views' => 1234,
-                'badge' => null,
-                'badge_gradient' => null,
-                'category_slug' => 'folk',
-            ],
         ];
 
-        foreach ($albums as $albumData) {
+        $coverImages = [
+            'https://images.unsplash.com/photo-1501612780327-45045538702b',
+            'https://images.unsplash.com/photo-1514525253161-7a46d19cd819',
+            'https://images.unsplash.com/photo-1459749411177-0473ef716170',
+            'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4',
+            'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad',
+        ];
+
+        foreach ($albumsData as $index => $albumData) {
             $categorySlug = $albumData['category_slug'];
             unset($albumData['category_slug']);
 
-            $album = Album::create($albumData + ['photographer_id' => $photographer->id]);
+            $coverUrl = $coverImages[$index % count($coverImages)];
+
+            $albumData['cover_image'] = $coverUrl.'?auto=format&fit=crop&w=800&h=800&q=80';
+            $albumData['cover_image_square'] = $coverUrl.'?auto=format&fit=crop&w=800&h=800&q=80';
+            $albumData['cover_image_hero'] = $coverUrl.'?auto=format&fit=crop&w=2000&h=800&q=80';
+            $albumData['photographer_id'] = $photographer->id;
+
+            $album = Album::create($albumData);
 
             // Attach category
             $category = Category::where('slug', $categorySlug)->first();
@@ -178,24 +141,96 @@ class AlbumSeeder extends Seeder
                 $album->categories()->attach($category->id);
             }
 
-            $album->comments()->createMany([
-                [
-                    'user_id' => $photographer->id,
-                    'content' => 'This was an amazing show! Check out these highlights.',
-                    'is_approved' => true,
-                    'likes' => random_int(5, 30),
-                    'created_at' => now()->subDays(random_int(1, 10)),
-                ],
-                [
-                    'user_id' => $photographer->id,
-                    'content' => 'The lighting was incredible that night.',
-                    'is_approved' => true,
-                    'likes' => random_int(0, 15),
-                    'created_at' => now()->subDays(random_int(1, 10)),
-                ],
-            ]);
+            // Create photos for the album
+            $this->createPhotosForAlbum($album, $albumData['photo_count']);
         }
 
         $this->command->info('Albums seeded successfully!');
+        $this->command->info('Unsorted album created for photographer ID: '.$photographer->id);
+    }
+
+    private function createPhotosForAlbum(Album $album, int $count): void
+    {
+        $photoUrls = [
+            'https://images.unsplash.com/photo-1501612780327-45045538702b',
+            'https://images.unsplash.com/photo-1514525253161-7a46d19cd819',
+            'https://images.unsplash.com/photo-1459749411177-0473ef716170',
+            'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4',
+            'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad',
+        ];
+
+        $descriptions = [
+            'A stunning moment captured during the performance.',
+            'The energy on stage was electric!',
+            'Beautiful lighting and composition.',
+            'An intimate moment between the artist and the audience.',
+            'Perfect timing capturing this dramatic moment.',
+        ];
+
+        for ($i = 0; $i < $count; $i++) {
+            $photoId = (string) Str::uuid();
+            $baseUrl = $photoUrls[$i % count($photoUrls)];
+
+            Photo::create([
+                'id' => $photoId,
+                'album_id' => $album->id,
+                'title' => $album->title.' - Photo '.($i + 1),
+                'description' => $descriptions[$i % count($descriptions)],
+                'original_path' => "stagephoto/originals/{$album->photographer_id}/{$album->id}/{$photoId}_original.jpg",
+                'full_path' => "stagephoto/webp/{$album->photographer_id}/{$album->id}/{$photoId}_full.webp",
+                'thumbnail_path' => "stagephoto/webp/{$album->photographer_id}/{$album->id}/{$photoId}_thumb.webp",
+                'hash' => md5($baseUrl.$photoId),
+                'file_size' => random_int(500000, 5000000),
+                'mime_type' => 'image/jpeg',
+                'sort_order' => $i,
+                'is_featured' => $i === 0,
+                'views' => random_int(0, 5000),
+            ]);
+        }
+    }
+
+    /**
+     * Attach random categories to the album after creation.
+     */
+    public function withRandomCategories(int $count = 1): static
+    {
+        return $this->afterCreating(function (Album $album) use ($count) {
+            $categories = Category::inRandomOrder()->limit($count)->pluck('id');
+            $album->categories()->attach($categories);
+        });
+    }
+
+    /**
+     * Create photos for the album after creation.
+     */
+    public function withPhotos(int $count = 5): static
+    {
+        return $this->afterCreating(function (Album $album) use ($count) {
+            Photo::factory()
+                ->count($count)
+                ->forAlbum($album)
+                ->create();
+        });
+    }
+
+    /**
+     * Create an album for a specific genre.
+     */
+    public function forGenre(string $genreSlug): static
+    {
+        return $this->afterCreating(function (Album $album) use ($genreSlug) {
+            $category = Category::where('slug', $genreSlug)->first();
+            if ($category) {
+                $album->categories()->attach($category->id);
+            }
+        });
+    }
+
+    /**
+     * Create an album with a NEW badge.
+     */
+    public function fresh(): static
+    {
+        return $this->withBadge('✨ NEW', 'from-pink-500 to-orange-500');
     }
 }

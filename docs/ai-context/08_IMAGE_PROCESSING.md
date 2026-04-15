@@ -1,33 +1,59 @@
 # 🖼️ Image Processing Guide
 
-## Dimension Reference Card
+## Quick Reference
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        IMAGE DIMENSIONS                              │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  ALBUM COVER (GRID)          ALBUM COVER (HERO)                     │
-│  ┌──────────────┐            ┌──────────────────────────────────┐   │
-│  │   800x800    │            │          2000x800                 │   │
-│  │   1:1 Square │            │         2.5:1 Landscape           │   │
-│  │   WebP, 85%  │            │         WebP, 85%, No WM          │   │
-│  └──────────────┘            └──────────────────────────────────┘   │
-│                                                                      │
-│  PHOTO THUMBNAIL             FULL-SIZE PHOTO                        │
-│  ┌──────────────┐            ┌──────────────────────────────────┐   │
-│  │   600x600    │            │        1600px max side            │   │
-│  │   1:1 Square │            │        Original aspect ratio      │   │
-│  │   WebP, 80%  │            │        WebP, 85%, With WM         │   │
-│  └──────────────┘            └──────────────────────────────────┘   │
-│                                                                      │
-│  ORIGINAL UPLOAD (Archival)                                         │
-│  ┌──────────────────────────────────────────────────────────────┐   │
-│  │              User-uploaded original size                      │   │
-│  │              Original format (JPEG/PNG preserved)             │   │
-│  │              No watermark, No conversion                       │   │
-│  └──────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           IMAGE DIMENSIONS                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ALBUM COVER (GRID)          ALBUM COVER (HERO)                             │
+│  ┌──────────────┐            ┌──────────────────────────────────────────┐   │
+│  │   800x800    │            │              2000x800                     │   │
+│  │   1:1 Square │            │             2.5:1 Landscape               │   │
+│  │   WebP, 85%  │            │             WebP, 85%, No WM              │   │
+│  │   No WM      │            │             No WM                         │   │
+│  └──────────────┘            └──────────────────────────────────────────┘   │
+│                                                                              │
+│  PHOTO THUMBNAIL             FULL-SIZE PHOTO                                │
+│  ┌──────────────┐            ┌──────────────────────────────────────────┐   │
+│  │   600x600    │            │        1600px max side                    │   │
+│  │   1:1 Square │            │        Original aspect ratio              │   │
+│  │   WebP, 80%  │            │        WebP, 85%, With WM                 │   │
+│  │   With WM    │            │        With WM                            │   │
+│  └──────────────┘            └──────────────────────────────────────────┘   │
+│                                                                              │
+│  ORIGINAL UPLOAD (Archival)                                                 │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │              User-uploaded original size                              │   │
+│  │              Original format (JPEG/PNG preserved)                     │   │
+│  │              No watermark, No conversion, No processing               │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Processing Workflow
+
+```php
+// 1. Upload → Store original
+// 2. Generate WebP variants (full, thumbnail)
+// 3. Apply watermark to display images
+// 4. If album cover, generate square and hero variants
+// 5. Update database with paths
+// 6. Increment album photo_count
+```
+
+## Soft Delete & File Cleanup
+
+```php
+// Soft delete (keeps files)
+$photo->delete();
+
+// Restore (files remain)
+$photo->restore();
+
+// Force delete (removes files)
+$imageService->forceDeletePhoto($photo);
 ```
 
 ## Quick Reference by Use Case

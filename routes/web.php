@@ -37,6 +37,11 @@ Route::livewire('/photo/{photo}', 'frontend.pages.photo-show')->name('photo.show
 // Album routes
 Route::livewire('/album/{album:slug}', 'frontend.pages.⚡album-show')->name('album.show');
 
+// Protected routes for photographers
+Route::middleware(['auth'])->group(function () {
+    Route::livewire('/albums/{album}/upload', 'frontend.photo-uploader')->name('album.upload');
+});
+
 Route::prefix('{current_team}')
     ->middleware(['auth', 'verified', EnsureTeamMembership::class])
     ->group(function () {

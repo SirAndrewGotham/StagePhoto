@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Album;
-use App\Models\Category;
-use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -28,11 +26,6 @@ class AlbumFactory extends Factory
             'Valery Gergiev • Tchaikovsky Symphony No. 5',
             'Nina Kraviz • Garage Live Set',
             'Pelageya • Open Air Folk Fest',
-            'Royal Blood • Stadium Tour',
-            'Muse • Simulation Theory World Tour',
-            'Radiohead • A Moon Shaped Pool',
-            'The National • Live at Izvestia Hall',
-            'Bach Cello Suites • Mstislav Rostropovich',
         ];
 
         $venues = [
@@ -46,11 +39,6 @@ class AlbumFactory extends Factory
             'Tchaikovsky Hall, Moscow',
             'Garage Club, Moscow',
             'Folk Festival, Moscow',
-            'Stadium Live, Moscow',
-            'Izvestia Hall, Moscow',
-            'GlavClub, Moscow',
-            'Strelka Institute, Moscow',
-            'GES-2, Moscow',
         ];
 
         $badges = ['✨ NEW', '🔥 FEATURED', '👤 YOUR WORK', null];
@@ -62,8 +50,6 @@ class AlbumFactory extends Factory
         ];
 
         $title = $this->faker->randomElement($titles);
-
-        // Randomly select badge and corresponding gradient
         $badge = $this->faker->randomElement($badges);
         $badgeGradient = $badge ? $this->faker->randomElement(array_filter($badgeGradients)) : null;
 
@@ -71,18 +57,9 @@ class AlbumFactory extends Factory
             'title' => $title,
             'slug' => Str::slug($title).'-'.$this->faker->unique()->numberBetween(1, 9999),
             'description' => $this->faker->paragraphs(3, true),
-            'cover_image' => 'https://images.unsplash.com/photo-'.$this->faker->randomElement([
-                '1501612780327-45045538702b?auto=format&fit=crop&w=600&q=80',
-                '1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80',
-                '1459749411177-0473ef716170?auto=format&fit=crop&w=600&q=80',
-                '1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80',
-                '1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80',
-                '1514320291840-2e0a9bf2f4ae?auto=format&fit=crop&w=600&q=80',
-                '1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
-                '1501281668745-f7f57925c3b4?auto=format&fit=crop&w=600&q=80',
-                '1516450360452-93659f5a3f21?auto=format&fit=crop&w=600&q=80',
-                '1504609773096-104ff2c73ba4?auto=format&fit=crop&w=600&q=80',
-            ]),
+            'cover_image' => 'https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=800&h=800&q=80',
+            'cover_image_square' => 'https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=800&h=800&q=80',
+            'cover_image_hero' => 'https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=2000&h=800&q=80',
             'photographer_id' => User::factory(),
             'venue' => $this->faker->randomElement($venues),
             'event_date' => $this->faker->dateTimeBetween('-6 months', 'now')->format('Y-m-d'),
@@ -90,6 +67,7 @@ class AlbumFactory extends Factory
             'rating' => $this->faker->randomFloat(1, 3.5, 5.0),
             'views' => $this->faker->numberBetween(100, 10000),
             'is_published' => $this->faker->boolean(95),
+            'is_unsorted' => false,
             'badge' => $badge,
             'badge_gradient' => $badgeGradient,
             'created_at' => now(),
@@ -114,6 +92,21 @@ class AlbumFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'is_published' => false,
+        ]);
+    }
+
+    /**
+     * Indicate that the album is an unsorted album.
+     */
+    public function unsorted(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_unsorted' => true,
+            'is_published' => false,
+            'title' => 'Unsorted',
+            'slug' => 'unsorted-'.($attributes['photographer_id'] ?? 1),
+            'badge' => '📁 UNSORTED',
+            'badge_gradient' => 'from-gray-500 to-gray-600',
         ]);
     }
 
@@ -160,7 +153,6 @@ class AlbumFactory extends Factory
 
     /**
      * Create an album with a NEW badge.
-     * Renamed from new() to fresh() to avoid conflict with Laravel's new() method
      */
     public function fresh(): static
     {
@@ -184,78 +176,13 @@ class AlbumFactory extends Factory
     }
 
     /**
-     * Attach categories to the album after creation.
+     * Indicate that the album is soft deleted.
      */
-    public function withCategories($categories): static
+    public function trashed(): static
     {
-        return $this->afterCreating(function (Album $album) use ($categories) {
-            if (is_array($categories)) {
-                $album->categories()->attach($categories);
-            } elseif ($categories instanceof Category) {
-                $album->categories()->attach($categories->id);
-            } elseif (is_string($categories)) {
-                $category = Category::where('slug', $categories)->first();
-                if ($category) {
-                    $album->categories()->attach($category->id);
-                }
-            }
-        });
-    }
-
-    /**
-     * Attach random categories to the album.
-     */
-    public function withRandomCategories(int $count = 1): static
-    {
-        return $this->afterCreating(function (Album $album) use ($count) {
-            $categories = Category::inRandomOrder()->limit($count)->pluck('id');
-            $album->categories()->attach($categories);
-        });
-    }
-
-    public function withPhotos(int $count = 5): static
-    {
-        return $this->afterCreating(function (Album $album) use ($count) {
-            Photo::factory()
-                ->count($count)
-                ->forAlbum($album)
-                ->create();
-        });
-    }
-
-    /**
-     * Create an album for a specific genre.
-     */
-    public function forGenre(string $genreSlug): static
-    {
-        return $this->afterCreating(function (Album $album) use ($genreSlug) {
-            $category = Category::where('slug', $genreSlug)->first();
-            if ($category) {
-                $album->categories()->attach($category->id);
-            }
-        });
-    }
-
-    /**
-     * Create a music album.
-     */
-    public function music(): static
-    {
-        return $this->afterCreating(function (Album $album) {
-            $categories = Category::where('type', 'music')->inRandomOrder()->limit(1)->pluck('id');
-            $album->categories()->attach($categories);
-        });
-    }
-
-    /**
-     * Create a theater album.
-     */
-    public function theater(): static
-    {
-        return $this->afterCreating(function (Album $album) {
-            $categories = Category::where('type', 'theater')->inRandomOrder()->limit(1)->pluck('id');
-            $album->categories()->attach($categories);
-        });
+        return $this->state(fn (array $attributes) => [
+            'deleted_at' => now(),
+        ]);
     }
 
     /**
@@ -289,29 +216,9 @@ class AlbumFactory extends Factory
     }
 
     /**
-     * Create an older album (more than 3 months old).
-     */
-    public function old(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'event_date' => $this->faker->dateTimeBetween('-1 year', '-3 months')->format('Y-m-d'),
-        ]);
-    }
-
-    /**
-     * Configure the factory to create an album with many photos.
+     * Create an album with many photos.
      */
     public function manyPhotos(int $count = 100): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'photo_count' => $count,
-        ]);
-    }
-
-    /**
-     * Configure the factory to create an album with few photos.
-     */
-    public function fewPhotos(int $count = 20): static
     {
         return $this->state(fn (array $attributes) => [
             'photo_count' => $count,

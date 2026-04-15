@@ -13,17 +13,29 @@ Configured in `config/livewire.php`:
 
 ### Current File Structure
 ```
-resources/views/components/frontend/
+rresources/views/components/frontend/
 ├── ui/
 │   ├── ⚡album-card.blade.php          ← Album card (entire card clickable)
 │   ├── ⚡header.blade.php               ← Main navigation
 │   ├── ⚡footer.blade.php               ← Site footer
-│   └── ⚡request-modal.blade.php        ← Request modal form
+│   ├── ⚡request-modal.blade.php        ← Request modal form
+│   ├── ⚡trash-manager.blade.php        ← Trash/recycle bin manager
+│   └── ⚡photo-uploader.blade.php       ← Photo upload interface
 ├── islands/
 │   ├── ⚡filter-bar.blade.php           ← Filter bar (genre, type, sort)
 │   └── ⚡album-grid.blade.php           ← Album grid island
 └── pages/
     └── ⚡home.blade.php                 ← Home page
+```
+
+## Protected Routes (Photographer-only)
+
+```php
+// routes/web.php
+Route::middleware(['auth'])->group(function () {
+    Route::livewire('/albums/{album}/upload', 'frontend.photo-uploader')->name('album.upload');
+    Route::livewire('/trash', 'frontend.trash-manager')->name('trash.manager');
+});
 ```
 
 ### Page Components

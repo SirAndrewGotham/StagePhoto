@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('albums', function (Blueprint $table) {
@@ -16,34 +13,29 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->string('cover_image');
-            $table->foreignId('photographer_id')->constrained('users');
+            $table->string('cover_image')->nullable();  // Make nullable
+            $table->string('cover_image_square')->nullable();  // Make nullable
+            $table->string('cover_image_hero')->nullable();  // Make nullable
+            $table->foreignId('photographer_id')->constrained('users')->onDelete('cascade');
             $table->string('venue')->nullable();
             $table->date('event_date');
             $table->integer('photo_count')->default(0);
             $table->decimal('rating', 2, 1)->default(0);
             $table->integer('views')->default(0);
             $table->boolean('is_published')->default(true);
+            $table->boolean('is_unsorted')->default(false);
             $table->string('badge')->nullable();
             $table->string('badge_gradient')->nullable();
+            $table->softDeletes();
             $table->timestamps();
-        });
 
-        // Pivot table for albums and categories (already created earlier)
-        // If not created yet:
-        if (! Schema::hasTable('album_category')) {
-            Schema::create('album_category', function (Blueprint $table) {
-                $table->id();
-                $table->foreignId('album_id')->constrained()->onDelete('cascade');
-                $table->foreignId('category_id')->constrained()->onDelete('cascade');
-                $table->timestamps();
-            });
-        }
+            $table->index('slug');
+            $table->index('photographer_id');
+            $table->index('is_published');
+            $table->index('is_unsorted');
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('albums');

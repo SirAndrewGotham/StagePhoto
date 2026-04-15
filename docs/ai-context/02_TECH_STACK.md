@@ -326,3 +326,125 @@ return [
     ],
 ];
 ```
+
+## 🗑️ Soft Delete System
+
+### Implementation
+- **Albums**: Uses `SoftDeletes` trait, preserves album data and relationships
+- **Photos**: Uses `SoftDeletes` trait, preserves image metadata
+- **Cascade**: Deleting an album soft deletes all its photos
+- **Restore**: Restoring an album restores all its photos
+- **Force Delete**: Permanent deletion with file system cleanup
+
+### Database Columns
+```php
+$table->softDeletes(); // Adds deleted_at column
+```
+
+### Available Methods
+```php
+// Soft delete
+$album->delete();
+$photo->delete();
+
+// Restore
+$album->restore();
+$photo->restore();
+
+// Force delete (permanent)
+$album->forceDelete();
+$photo->forceDelete();
+
+// Query trashed items
+Album::onlyTrashed()->get();
+Photo::onlyTrashed()->get();
+
+// Include trashed in queries
+Album::withTrashed()->find($id);
+```
+
+## 📦 Unsorted Albums System
+
+### Purpose
+Automatically created default album for each photographer to receive uploaded photos before organization.
+
+### Features
+- **Auto-creation**: Created when photographer first uploads a photo
+- **Private by default**: Not visible to site visitors (`is_published = false`)
+- **Badge**: Shows "📁 UNSORTED" badge in photographer's dashboard
+- **Move functionality**: Photos can be moved to other albums
+- **Bulk operations**: Multiple photos can be moved at once
+
+### Database Fields
+```php
+$table->boolean('is_unsorted')->default(false);
+```
+
+### Service Methods
+```php
+// Get or create unsorted album
+$unsortedService->getOrCreateUnsortedAlbum($photographer);
+
+// Move single photo
+$unsortedService->moveToAlbum($photoId, $targetAlbum);
+
+// Move multiple photos
+$unsortedService->moveMultipleToAlbum($photoIds, $targetAlbum);
+```
+
+## 🖼️ Image Processing System
+
+### Storage Structure
+```
+storage/app/public/stagephoto/
+├── originals/{user_id}/{album_id}/{photo_id}_original.{ext}
+├── webp/{user_id}/{album_id}/
+│   ├── {photo_id}_full.webp    (1600px max side, with watermark)
+│   └── {photo_id}_thumb.webp   (600x600, with watermark)
+└── albums/{user_id}/{album_id}/
+    ├── cover_square.webp        (800x800, no watermark)
+    └── cover_hero.webp          (2000x800, no watermark)
+```
+
+### Image Variants
+
+| Variant | Dimensions | Watermark | Quality | Usage |
+|---------|------------|-----------|---------|-------|
+| Original | User-uploaded | No | 100% | Archival |
+| Full | 1600px max side | Yes | 85% | Photo modal |
+| Thumbnail | 600x600 (crop) | Yes | 80% | Grid preview |
+| Cover Square | 800x800 | No | 85% | Album cards |
+| Cover Hero | 2000x800 | No | 85% | Album header |
+
+### Processing Service
+```php
+use App\Services\ImageProcessingService;
+
+// Process single upload
+$photo = $imageService->processUpload($file, $album, $description, $title);
+
+// Process ZIP upload
+$result = $imageService->processZipUpload($zipFile, $album);
+
+// Set album cover from photo
+$imageService->setAlbumCover($photo, $album);
+
+// Delete with file cleanup
+$imageService->forceDeletePhoto($photo);
+```
+
+## 🗑️ Trash Management
+
+### Component: `⚡trash-manager.blade.php`
+- **Purpose**: Manage soft-deleted albums and photos
+- **Features**:
+    - View deleted albums and photos
+    - Restore items to original location
+    - Permanently delete with file cleanup
+    - Filter by type (albums/photos)
+    - Pagination support
+
+### Access
+```blade
+@livewire('frontend.trash-manager')
+```

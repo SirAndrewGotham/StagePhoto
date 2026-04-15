@@ -14,12 +14,12 @@
 | File | Purpose | When to Read |
 |------|---------|--------------|
 | `01_PROJECT_VISION.md` | Core principles, target audience, anti-patterns | Always - defines project soul |
-| `02_TECH_STACK.md` | Livewire 4 syntax, configuration, performance budget | Before writing any code |
+| `02_TECH_STACK.md` | Livewire 4 syntax, configuration, soft deletes, image processing | Before writing any code |
 | `03_DESIGN_SYSTEM.md` | Full-width mandate, colors, dark mode, responsive breakpoints | Before any UI work |
 | `04_UX_RULES.md` | Filter bar, infinite scroll, loading states, accessibility | Before interaction design |
-| `05_COMPONENT_SPEC.md` | Album card, header, footer, request modal, language switcher | Before component creation |
-| `06_ROUTING.md` | File structure, route registration, naming conventions | Before creating new pages |
-| `07_AI_WORKFLOW.md` | Prompt templates, anti-patterns, testing checklist | For optimal AI collaboration |
+| `05_COMPONENT_SPEC.md` | Album card, header, footer, request modal, trash manager, photo uploader | Before component creation |
+| `06_ROUTING.md` | File structure, route registration, naming conventions, protected routes | Before creating new pages |
+| `07_AI_WORKFLOW.md` | Prompt templates, anti-patterns, testing checklist, implemented features | For optimal AI collaboration |
 | `08_IMAGE_PROCESSING.md` | Image dimensions, formats, watermarks, processing workflow | When implementing uploads |
 
 ## 🚀 Quick Start for New AI Session
@@ -30,7 +30,7 @@
 3. `06_ROUTING.md` - Understand where components live
 4. `08_IMAGE_PROCESSING.md` - Understand image requirements
 
-## Current Implementation Status
+## Current Implementation Status (Updated)
 
 | Feature | Status |
 |---------|--------|
@@ -43,9 +43,17 @@
 | Request system | ✅ Complete |
 | Multi-language (RU, EN, EO) | ✅ Complete |
 | Dark mode | ✅ Complete |
-| WebP conversion | ⏳ Pending |
-| Watermark application | ⏳ Pending |
-| Photographer upload interface | ⏳ Pending |
+| WebP conversion | ✅ Complete |
+| Watermark application | ✅ Complete |
+| Album cover variants | ✅ Complete |
+| ZIP batch upload | ✅ Complete |
+| Drag-and-drop upload | ✅ Complete |
+| Duplicate detection | ✅ Complete |
+| Soft deletes | ✅ Complete |
+| Trash manager | ✅ Complete |
+| Unsorted albums | ✅ Complete |
+| Move photos between albums | ✅ Complete |
+| Photographer upload interface | ✅ Complete |
 | Admin dashboard | ⏳ Pending |
 
 ## ⚡ Critical Rules (Never Break)

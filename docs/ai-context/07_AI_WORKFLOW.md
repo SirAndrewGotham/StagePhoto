@@ -72,6 +72,8 @@ globs: resources/views/components/frontend/**/*.blade.php
 - ❌ **Storing original images without generating WebP variants**
 - ❌ **Skipping watermark on display images**
 - ❌ **Using JPEG/PNG for web delivery** (use WebP instead)
+- ❌ **Permanently deleting without soft delete first**
+- ❌ **Forgetting to update photo_count when moving/deleting photos**
 
 ## ✅ Implemented Features (Current State)
 
@@ -89,17 +91,32 @@ globs: resources/views/components/frontend/**/*.blade.php
 - [x] Category system with translations
 - [x] Request system for photographers
 
-### Image Processing (To Be Implemented)
-- [ ] WebP conversion on upload
-- [ ] Multiple size variants generation
-- [ ] Watermark application
-- [ ] Album cover variants (square + hero)
+### Image Processing
+- [x] WebP conversion on upload
+- [x] Multiple size variants generation
+- [x] Watermark application on photos (not album covers)
+- [x] Album cover variants (square + hero)
+- [x] Duplicate detection by file hash
+- [x] ZIP archive batch upload
+- [x] Drag-and-drop upload interface
+
+### Data Management
+- [x] Soft deletes for albums and photos
+- [x] Trash/Recycle bin manager
+- [x] Restore functionality
+- [x] Force delete with file cleanup
+- [x] Cascade soft deletes (album → photos)
+
+### Organization
+- [x] Unsorted albums (auto-created per photographer)
+- [x] Move photos between albums
+- [x] Bulk photo operations
 
 ### Database Tables Created
 | Table | Purpose |
 |-------|---------|
-| `albums` | Album metadata |
-| `photos` | Photo metadata and paths |
+| `albums` | Album metadata + soft deletes + unsorted flag |
+| `photos` | Photo metadata + soft deletes |
 | `categories` | Music/theater categories |
 | `category_translations` | Multi-language category names |
 | `tags` | Album tags |

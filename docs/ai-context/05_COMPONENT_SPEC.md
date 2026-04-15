@@ -435,3 +435,54 @@ test('language persists after reload', async ({ page }) => {
     expect(activeButton).toBe('EN');
 });
 ```
+
+## 🗑️ Trash Manager (`⚡trash-manager.blade.php`)
+
+- **Purpose**: Manage soft-deleted albums and photos
+- **Location**: `resources/views/components/frontend/ui/⚡trash-manager.blade.php`
+- **Access**: Photographer-only (authenticated)
+- **Features**:
+    - Toggle between deleted albums and photos
+    - Restore items with one click
+    - Permanent deletion with confirmation
+    - Shows deletion timestamp
+    - Pagination for large lists
+
+### Usage
+```blade
+@livewire('frontend.trash-manager')
+```
+
+## 📸 Photo Uploader (`⚡photo-uploader.blade.php`)
+
+- **Purpose**: Upload photos to albums
+- **Location**: `resources/views/components/frontend/⚡photo-uploader.blade.php`
+- **Upload Methods**:
+    - Single photo upload
+    - Multiple photo upload
+    - ZIP archive upload
+- **Features**:
+    - Drag-and-drop support
+    - Progress tracking
+    - Duplicate detection (by file hash)
+    - Automatic WebP conversion
+    - Watermark application
+    - Automatic unsorted album creation
+
+### Usage
+```blade
+@livewire('frontend.photo-uploader', ['album' => $album])
+```
+
+## 📁 Unsorted Album
+
+- **Purpose**: Default album for unorganized uploads
+- **Properties**:
+    - `is_unsorted = true`
+    - `is_published = false` (private)
+    - Special badge: "📁 UNSORTED"
+- **Behavior**:
+    - Auto-created on first upload
+    - Photos can be moved to other albums
+    - Not visible to site visitors
+    - Accessible only in photographer's dashboard

@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Models\Album;
 use App\Models\Photo;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class PhotoFactory extends Factory
 {
@@ -24,13 +25,22 @@ class PhotoFactory extends Factory
         ];
 
         $url = $this->faker->randomElement($photoUrls);
+        $photoId = (string) Str::uuid();
+        $filename = $this->faker->word().'.jpg';
 
         return [
+            'id' => $photoId,
             'album_id' => Album::factory(),
-            'filename' => $this->faker->word().'.jpg',
-            'path' => $url.'?auto=format&fit=crop&w=1200&q=80',
-            'thumbnail_path' => $url.'?auto=format&fit=crop&w=300&q=80',
-            'description' => $this->faker->optional()->sentence(),
+            'filename' => $filename,  // Add this
+            'path' => $url.'?auto=format&fit=crop&w=1200&q=80',  // Add this
+            'title' => $this->faker->sentence(3),
+            'description' => $this->faker->optional(0.7)->paragraph(),
+            'original_path' => "stagephoto/originals/{$photoId}_original.jpg",
+            'full_path' => "stagephoto/webp/{$photoId}_full.webp",
+            'thumbnail_path' => "stagephoto/webp/{$photoId}_thumb.webp",
+            'hash' => md5($url.$this->faker->randomNumber()),
+            'file_size' => $this->faker->numberBetween(500000, 5000000),
+            'mime_type' => 'image/jpeg',
             'sort_order' => $this->faker->numberBetween(0, 100),
             'is_featured' => $this->faker->boolean(10),
             'views' => $this->faker->numberBetween(0, 10000),
@@ -50,6 +60,20 @@ class PhotoFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'is_featured' => true,
+        ]);
+    }
+
+    public function trashed(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'deleted_at' => now(),
+        ]);
+    }
+
+    public function withDescription(?string $description): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'description' => $description,
         ]);
     }
 }

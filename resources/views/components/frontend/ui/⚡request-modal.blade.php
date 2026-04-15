@@ -5,7 +5,7 @@ use Livewire\Attributes\On;
 use App\Models\Request;
 
 new class extends Component {
-    public $albumId = null;
+    public $albumId;
     public $showModal = false;
 
     // Form fields
@@ -29,7 +29,7 @@ new class extends Component {
         'budget_range' => 'nullable|string|max:100',
     ];
 
-    public function mount()
+    public function mount(): void
     {
         if (auth()->check()) {
             $this->requester_name = auth()->user()->name;
@@ -38,13 +38,13 @@ new class extends Component {
     }
 
     #[On('open-request-modal')]
-    public function handleOpenRequestModal($albumId)
+    public function handleOpenRequestModal($albumId): void
     {
         $this->albumId = $albumId;
         $this->showModal = true;
     }
 
-    public function closeModal()
+    public function closeModal(): void
     {
         $this->showModal = false;
         $this->albumId = null;
@@ -59,7 +59,7 @@ new class extends Component {
         }
     }
 
-    public function submit()
+    public function submit(): void
     {
         $this->validate();
 

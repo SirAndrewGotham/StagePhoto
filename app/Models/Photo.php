@@ -11,13 +11,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['album_id', 'filename', 'path', 'thumbnail_path', 'description',
-    'sort_order', 'is_featured', 'views'])]
+#[Fillable(['id', 'album_id', 'title', 'description', 'original_path', 'full_path', 'thumbnail_path', 'hash', 'file_size', 'mime_type', 'sort_order', 'is_featured', 'views'])]
 class Photo extends Model
 {
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     /** @use HasFactory<PhotoFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     #[\Override]
     protected function casts(): array
@@ -26,8 +30,11 @@ class Photo extends Model
             'is_featured' => 'boolean',
             'views' => 'integer',
             'sort_order' => 'integer',
+            'file_size' => 'integer',
         ];
     }
+
+    protected $dates = ['deleted_at'];
 
     public function album(): BelongsTo
     {
@@ -106,5 +113,13 @@ class Photo extends Model
             ['user_id' => $userId],
             ['rating' => $rating]
         );
+    }
+
+    /**
+     * Get the album that owns the photo (including soft deleted albums)
+     */
+    public function albumWithTrashed(): BelongsTo
+    {
+        return $this->belongsTo(Album::class, 'album_id')->withTrashed();
     }
 }

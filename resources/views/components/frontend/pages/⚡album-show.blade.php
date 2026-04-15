@@ -102,6 +102,15 @@ new class extends Component {
         return $this->currentPhoto ? $this->currentPhoto->approvedComments()->count() : 0;
     }
 
+    #[Computed]
+    public function photos()
+    {
+        return $this->album
+            ->photos()  // This automatically excludes soft deleted photos
+            ->orderBy('sort_order')
+            ->paginate($this->perPage, ['*'], 'photoPage', $this->photoPage);
+    }
+
     public function selectPhoto($photoId): void
     {
         $this->selectedPhoto = $photoId;

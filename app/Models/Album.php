@@ -13,24 +13,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable([
-    'title', 'slug', 'description', 'cover_image', 'photographer_id',
-    'venue', 'event_date', 'photo_count', 'rating', 'views',
-    'is_published', 'badge', 'badge_gradient',
+    'title', 'slug', 'description', 'cover_image', 'cover_image_square', 'cover_image_hero', 'photographer_id', 'venue', 'event_date', 'photo_count', 'rating', 'views', 'is_published', 'is_unsorted', 'badge', 'badge_gradient',
 ])]
 
 class Album extends Model
 {
     /** @use HasFactory<AlbumFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $casts = [
         'event_date' => 'date',
         'is_published' => 'boolean',
+        'is_unsorted' => 'boolean',
         'rating' => 'decimal:1',
         'views' => 'integer',
     ];
+
+    protected $dates = ['deleted_at'];
 
     public function photographer(): BelongsTo
     {
@@ -118,5 +120,37 @@ class Album extends Model
             ['user_id' => $userId],
             ['rating' => $rating]
         );
+    }
+
+    /**
+     * Get all photos including soft deleted ones
+     */
+    public function photosWithTrashed(): HasMany
+    {
+        return $this->hasMany(Photo::class)->withTrashed();
+    }
+
+    /**
+     * Get only trashed photos
+     */
+    public function trashedPhotos(): HasMany
+    {
+        return $this->hasMany(Photo::class)->onlyTrashed();
+    }
+
+    /**
+     * Scope for published albums (excluding soft deleted)
+     */
+    public function scopePublished($query)
+    {
+        return $query->where('is_published', true);
+    }
+
+    /**
+     * Scope for visible albums (published and not soft deleted)
+     */
+    public function scopeVisible($query)
+    {
+        return $query->where('is_published', true)->whereNull('deleted_at');
     }
 }
