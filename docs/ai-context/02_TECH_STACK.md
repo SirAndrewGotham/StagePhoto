@@ -143,6 +143,34 @@ return [
 ];
 ```
 
+## 📸 EXIF Data Extraction
+
+### Extracted Information
+- **Camera**: Make, model
+- **Lens**: Model, focal length
+- **Exposure**: Aperture (f-stop), shutter speed
+- **Sensitivity**: ISO
+- **Timestamp**: Capture date/time
+- **Location**: GPS coordinates (latitude, longitude)
+
+### Storage
+All EXIF data is stored in the `photos` table:
+- `exif_data` (JSON) - Raw EXIF data
+- Individual columns for common fields (camera_make, camera_model, etc.)
+
+### Requirements
+- PHP EXIF extension must be enabled
+- `php.ini`: `extension=exif`
+
+### Implementation
+```
+// ExifExtractorService::extract() handles:
+// - Reading EXIF from uploaded files
+// - Parsing GPS coordinates to decimal
+// - Converting date format to database compatible
+// - Graceful failure when EXIF not available
+```
+
 ## 🚫 Banned Technologies
 - jQuery, Vue, React, Inertia, Bootstrap
 - Custom CSS files (unless inside `@layer` directives)
@@ -156,6 +184,40 @@ return [
 - Use CSS grid: `grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))`
 - Preload critical fonts, defer Alpine/Livewire scripts
 - Lazy load images: `loading="lazy" decoding="async"`
+
+## 📊 Status & Approval System
+
+### Database Tables
+- `statuses` - Polymorphic table for tracking status changes
+- `albums.status` - Current status field
+- `photos.status` - Current status field
+
+### Status Flow
+```
+┌──────────┐    ┌──────────┐    ┌───────────┐
+│ Pending  │───▶│ Approved │───▶│ Published │
+└──────────┘    └──────────┘    └───────────┘
+│              │
+▼              ▼
+┌──────────┐    ┌──────────┐
+│ Rejected │    │ Blocked  │
+└──────────┘    └──────────┘
+```
+
+### API Methods
+```php
+// Add status to album/photo
+$album->addStatus('approved', 'Looks great!');
+
+// Get current status
+$album->status;
+
+// Get full history
+$album->statuses()->get();
+
+// Check if visible to public
+$album->canBeViewedByPublic();
+```
 
 ## 🧪 Testing Livewire Components
 

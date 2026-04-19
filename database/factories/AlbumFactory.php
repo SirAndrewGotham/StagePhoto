@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Album;
+use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -49,6 +50,9 @@ class AlbumFactory extends Factory
             null,
         ];
 
+        $statuses = ['pending', 'approved', 'published', 'rejected', 'blocked'];
+        $status = $this->faker->randomElement($statuses);
+
         $title = $this->faker->randomElement($titles);
         $badge = $this->faker->randomElement($badges);
         $badgeGradient = $badge ? $this->faker->randomElement(array_filter($badgeGradients)) : null;
@@ -66,13 +70,35 @@ class AlbumFactory extends Factory
             'photo_count' => $this->faker->numberBetween(15, 250),
             'rating' => $this->faker->randomFloat(1, 3.5, 5.0),
             'views' => $this->faker->numberBetween(100, 10000),
-            'is_published' => $this->faker->boolean(95),
+            'is_published' => $status === 'published',
             'is_unsorted' => false,
+            'status' => $status,
             'badge' => $badge,
             'badge_gradient' => $badgeGradient,
             'created_at' => now(),
             'updated_at' => now(),
         ];
+    }
+
+    /**
+     * Create photos for the album with optional categories
+     */
+    public function withPhotos(int $count = 5, ?array $categoryIds = null): static
+    {
+        return $this->afterCreating(function (Album $album) use ($count, $categoryIds) {
+            for ($i = 0; $i < $count; $i++) {
+                $photo = Photo::factory()
+                    ->forAlbum($album)
+                    ->create([
+                        'sort_order' => $i,
+                        'is_featured' => $i === 0,
+                    ]);
+
+                if ($categoryIds) {
+                    $photo->categories()->attach($categoryIds);
+                }
+            }
+        });
     }
 
     /**
@@ -82,6 +108,7 @@ class AlbumFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'is_published' => true,
+            'status' => 'published',
         ]);
     }
 
@@ -96,6 +123,50 @@ class AlbumFactory extends Factory
     }
 
     /**
+     * Indicate that the album is pending review.
+     */
+    public function pending(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'pending',
+            'is_published' => false,
+        ]);
+    }
+
+    /**
+     * Indicate that the album is approved.
+     */
+    public function approved(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'approved',
+            'is_published' => false,
+        ]);
+    }
+
+    /**
+     * Indicate that the album is rejected.
+     */
+    public function rejected(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'rejected',
+            'is_published' => false,
+        ]);
+    }
+
+    /**
+     * Indicate that the album is blocked.
+     */
+    public function blocked(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'blocked',
+            'is_published' => false,
+        ]);
+    }
+
+    /**
      * Indicate that the album is an unsorted album.
      */
     public function unsorted(): static
@@ -103,6 +174,7 @@ class AlbumFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'is_unsorted' => true,
             'is_published' => false,
+            'status' => 'pending',
             'title' => 'Unsorted',
             'slug' => 'unsorted-'.($attributes['photographer_id'] ?? 1),
             'badge' => '📁 UNSORTED',
@@ -223,5 +295,44 @@ class AlbumFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'photo_count' => $count,
         ]);
+    }
+
+    /**
+     * Create status history for the album.
+     */
+    public function withStatusHistory(array $statuses = null): static
+    {
+        return $this->afterCreating(function (Album $album) use ($statuses) {
+            $defaultStatuses = $statuses ?? ['pending', 'approved', 'published'];
+            $user = User::first();
+
+            foreach ($defaultStatuses as $index => $status) {
+                \App\Models\Status::create([
+                    'statusable_id' => $album->id,
+                    'statusable_type' => Album::class,
+                    'status' => $status,
+                    'comment' => $this->getStatusComment($status),
+                    'changed_by' => $user?->id ?? 1,
+                    'created_at' => now()->subDays(count($defaultStatuses) - $index),
+                ]);
+            }
+
+            $album->update(['status' => end($defaultStatuses)]);
+        });
+    }
+
+    /**
+     * Get comment for status change.
+     */
+    private function getStatusComment(string $status): string
+    {
+        return match($status) {
+            'pending' => 'Initial submission awaiting review',
+            'approved' => 'Approved by administrator',
+            'published' => 'Published to public',
+            'rejected' => 'Does not meet quality standards',
+            'blocked' => 'Blocked due to policy violation',
+            default => 'Status updated',
+        };
     }
 }

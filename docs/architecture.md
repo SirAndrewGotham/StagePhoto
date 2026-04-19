@@ -55,7 +55,7 @@ Route::livewire('/album/{id}', 'pages::album-show');
 ### Embedded Components
 ```blade
 @livewire('frontend.filter-bar')
-@livewire('frontend.album-card', ['album' => $album])
+@livewire('frontend.ui.album-card', ['album' => $album])
 ```
 
 ## Translation System

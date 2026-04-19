@@ -102,16 +102,7 @@ new class extends Component {
         return $this->currentPhoto ? $this->currentPhoto->approvedComments()->count() : 0;
     }
 
-    #[Computed]
-    public function photos()
-    {
-        return $this->album
-            ->photos()  // This automatically excludes soft deleted photos
-            ->orderBy('sort_order')
-            ->paginate($this->perPage, ['*'], 'photoPage', $this->photoPage);
-    }
-
-    public function selectPhoto($photoId): void
+    public function selectPhoto(string $photoId): void
     {
         $this->selectedPhoto = $photoId;
         $this->showModal = true;
@@ -251,7 +242,6 @@ new class extends Component {
 
         $this->album->rate(auth()->id(), $rating);
         $this->dispatch('album-rated', rating: $rating);
-        // Refresh computed properties
         unset($this->album);
     }
 
@@ -295,7 +285,6 @@ new class extends Component {
                         <span>📍 {{ $album->venue }}</span>
                         <span>📸 {{ $album->photos()->count() }} photos</span>
                         <span>👁️ {{ number_format($album->views) }} views</span>
-                        <!-- Rating Section -->
                         <div class="flex items-center gap-2" x-data="{ rating: {{ $album->user_rating ?? 0 }}, hoverRating: 0 }">
                             <div class="flex items-center gap-1">
                                 <template x-for="star in [1,2,3,4,5]">
@@ -306,7 +295,7 @@ new class extends Component {
                                         class="text-xl transition-colors focus:outline-none"
                                         :class="{
                                             'text-yellow-400': (hoverRating ? star <= hoverRating : star <= (rating || {{ $album->average_rating }})),
-                                        'text-gray-300 dark:text-gray-600': !(hoverRating ? star <= hoverRating : star <= (rating || {{ $album->average_rating }}))
+                                            'text-gray-300 dark:text-gray-600': !(hoverRating ? star <= hoverRating : star <= (rating || {{ $album->average_rating }}))
                                         }"
                                     >
                                         ★
@@ -314,7 +303,7 @@ new class extends Component {
                                 </template>
                             </div>
                             <span class="text-sm">
-                                {{ number_format($album->average_rating, 1) }} ({{ $album->rating_count }} {{ __('ratings') }})
+                                {{ number_format($album->average_rating, 1) }} ({{ $album->rating_count }} ratings)
                             </span>
                         </div>
                     </div>
@@ -343,31 +332,31 @@ new class extends Component {
                         </div>
                     @endif
 
-                    <!-- Photo Grid -->
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Photos</h2>
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            @foreach($this->photos as $photo)
-                                <div wire:click="selectPhoto({{ $photo->id }})" class="group relative aspect-square overflow-hidden rounded-xl cursor-pointer bg-gray-100 dark:bg-gray-800" role="button" tabindex="0">
-                                    <img src="{{ $photo->thumbnail_path ?? $photo->path }}" alt="{{ $album->title }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy">
-                                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300 flex items-center justify-center">
-                                        <span class="text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">🔍 View</span>
+                        <!-- Photo Grid -->
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Photos</h2>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                @foreach($this->photos as $photo)
+                                    <div wire:click="selectPhoto('{{ $photo->id }}')" class="group relative aspect-square overflow-hidden rounded-xl cursor-pointer bg-gray-100 dark:bg-gray-800" role="button" tabindex="0">
+                                        <img src="{{ $photo->thumbnail_path ?? $photo->full_path }}" alt="{{ $album->title }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy">
+                                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300 flex items-center justify-center">
+                                            <span class="text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">🔍 View</span>
+                                        </div>
+                                        @if($photo->is_featured)
+                                            <span class="absolute top-2 right-2 px-2 py-0.5 text-xs bg-yellow-500 text-white rounded-full">★</span>
+                                        @endif
                                     </div>
-                                    @if($photo->is_featured)
-                                        <span class="absolute top-2 right-2 px-2 py-0.5 text-xs bg-yellow-500 text-white rounded-full">★</span>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-                        @if($this->photos->hasMorePages())
-                            <div class="text-center mt-6">
-                                <button wire:click="loadMorePhotos" wire:loading.attr="disabled" class="px-6 py-2 bg-stage-600 text-white rounded-lg hover:bg-stage-700 transition">
-                                    <span wire:loading.remove>Load More Photos</span>
-                                    <span wire:loading>Loading...</span>
-                                </button>
+                                @endforeach
                             </div>
-                        @endif
-                    </div>
+                            @if($this->photos->hasMorePages())
+                                <div class="text-center mt-6">
+                                    <button wire:click="loadMorePhotos" wire:loading.attr="disabled" class="px-6 py-2 bg-stage-600 text-white rounded-lg hover:bg-stage-700 transition">
+                                        <span wire:loading.remove>Load More Photos</span>
+                                        <span wire:loading>Loading...</span>
+                                    </button>
+                                </div>
+                            @endif
+                        </div>
                 </div>
 
                 <!-- Sidebar -->
@@ -377,22 +366,22 @@ new class extends Component {
                         <div class="mb-3">
                             <span class="text-4xl">📸</span>
                         </div>
-                        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">{{ __('album.request_photographer') }}</h3>
+                        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Request Photographer</h3>
                         <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                            {{ __('album.request_description') }}
+                            Interested in hiring this photographer or getting high-resolution photos? Send a request!
                         </p>
                         <button
                             wire:click="openRequestModal"
                             class="w-full px-4 py-2 bg-stage-600 text-white rounded-lg hover:bg-stage-700 transition-colors"
                         >
-                            {{ __('album.request') }}
+                            Request
                         </button>
                     </div>
 
                     <!-- Related Albums -->
                     @if($this->relatedAlbums->isNotEmpty())
                         <div class="bg-white dark:bg-gray-800 rounded-xl p-6 mb-6 shadow-sm">
-                            <h3 class="font-semibold text-gray-900 dark:text-white mb-4">{{ __('album.related_albums') }}</h3>
+                            <h3 class="font-semibold text-gray-900 dark:text-white mb-4">Related Albums</h3>
                             <div class="space-y-3">
                                 @foreach($this->relatedAlbums as $related)
                                     <a href="{{ route('album.show', $related->slug) }}" wire:navigate class="block group">
@@ -402,7 +391,7 @@ new class extends Component {
                                                 <h4 class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-stage-600 transition">
                                                     {{ $related->title }}
                                                 </h4>
-                                                <p class="text-xs text-gray-500">{{ $related->photos()->count() }} {{ __('album.photos') }}</p>
+                                                <p class="text-xs text-gray-500">{{ $related->photos()->count() }} photos</p>
                                             </div>
                                         </div>
                                     </a>
@@ -478,9 +467,8 @@ new class extends Component {
             <div class="relative min-h-screen flex items-center justify-center p-4">
                 <div class="relative max-w-6xl w-full bg-white dark:bg-gray-800 rounded-2xl overflow-hidden">
                     <div class="grid grid-cols-1 lg:grid-cols-2">
-                        <!-- Photo -->
                         <div class="relative bg-black">
-                            <img src="{{ $this->currentPhoto->path }}" alt="{{ $album->title }}" class="w-full h-auto">
+                            <img src="{{ $this->currentPhoto->full_path }}" alt="{{ $album->title }}" class="w-full h-auto">
 
                             @if($this->photos->count() > 1)
                                 <button wire:click="previousPhoto" class="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 text-white rounded-full hover:bg-black/75 transition">◀</button>
@@ -490,22 +478,17 @@ new class extends Component {
                             <button wire:click="closeModal" class="absolute top-2 right-2 p-2 bg-black/50 text-white rounded-full hover:bg-black/75 transition">✕</button>
                         </div>
 
-                        <!-- Photo Comments Section -->
                         <div class="flex flex-col h-full max-h-[80vh] overflow-hidden">
-                            <!-- Photo Info with Request Button -->
                             <div class="p-4 border-b dark:border-gray-700">
                                 <div class="flex justify-between items-start">
                                     <div>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400">
-                                            Photo {{ $this->photos->search(fn($p) => $p->id == $selectedPhoto) + 1 }} of {{ $this->photos->count() }}
-                                        </p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Photo {{ $this->photos->search(fn($p) => $p->id == $selectedPhoto) + 1 }} of {{ $this->photos->count() }}</p>
                                         <p class="text-xs text-gray-400 mt-1">{{ $this->currentPhoto->views }} views</p>
                                     </div>
                                     <div class="flex gap-2">
                                         @if($this->currentPhoto->is_featured)
                                             <span class="px-2 py-1 text-xs bg-yellow-500 text-white rounded-full">Featured</span>
                                         @endif
-                                        <!-- Request Button for Photo -->
                                         <button
                                             wire:click="openRequestModal"
                                             class="px-3 py-1 text-xs bg-stage-600 text-white rounded-lg hover:bg-stage-700 transition-colors flex items-center gap-1"
@@ -513,7 +496,7 @@ new class extends Component {
                                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                             </svg>
-                                            {{ __('album.request_this_photo') }}
+                                            Request
                                         </button>
                                     </div>
                                 </div>
@@ -522,7 +505,6 @@ new class extends Component {
                                 @endif
                             </div>
 
-                            <!-- Photo Comments List -->
                             <div class="flex-1 overflow-y-auto p-4 space-y-4">
                                 <h4 class="font-semibold text-gray-900 dark:text-white">Comments ({{ $this->photoCommentCount }})</h4>
 

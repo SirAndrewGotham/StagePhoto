@@ -10,6 +10,8 @@ return new class extends Migration
     {
         Schema::create('albums', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('parent_id')->nullable()->constrained('albums')->onDelete('cascade');
+            $table->string('level')->default('main')->after('type'); // main, sub
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
@@ -26,6 +28,9 @@ return new class extends Migration
             $table->boolean('is_unsorted')->default(false);
             $table->string('badge')->nullable();
             $table->string('badge_gradient')->nullable();
+            $table->string('status')->default('pending')->after('is_published');
+            $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->timestamp('approved_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

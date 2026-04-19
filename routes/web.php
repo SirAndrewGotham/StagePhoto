@@ -35,12 +35,33 @@ Route::livewire('/', 'frontend.pages.⚡home')->name('home');
 Route::livewire('/photo/{photo}', 'frontend.pages.photo-show')->name('photo.show');
 
 // Album routes
+Route::livewire('/albums', 'frontend.pages.albums-index')->name('albums.index');
 Route::livewire('/album/{album:slug}', 'frontend.pages.⚡album-show')->name('album.show');
+
+// Home route
+Route::livewire('/', 'frontend.pages.home');
 
 // Protected routes for photographers
 Route::middleware(['auth'])->group(function () {
-    Route::livewire('/albums/{album}/upload', 'frontend.photo-uploader')->name('album.upload');
+    // Single photo upload
+    Route::livewire('/upload', 'frontend.pages.photo-upload')->name('photo.upload');
+
+    // Multiple photos upload
+    Route::livewire('/upload/multiple', 'frontend.pages.multiple-photo-upload')->name('photo.upload.multiple');
+
+    Route::livewire('/upload/zip', 'frontend.pages.zip-photo-upload')->name('photo.upload.zip');
+
+    // Trash manager
+    Route::livewire('/trash', 'frontend.trash-manager')->name('trash.manager');
 });
+
+
+// Protected routes for photographers
+// Route::middleware(['auth'])->prefix('photographer')->name('photographer.')->group(function () {
+//    Route::livewire('/upload', 'frontend.photo-upload')->name('upload');
+//    Route::livewire('/albums', 'frontend.albums-index')->name('albums');
+//    Route::livewire('/trash', 'frontend.trash-manager')->name('trash');
+// });
 
 Route::prefix('{current_team}')
     ->middleware(['auth', 'verified', EnsureTeamMembership::class])

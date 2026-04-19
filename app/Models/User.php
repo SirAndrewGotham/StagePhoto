@@ -28,7 +28,7 @@ class User extends Authenticatable
     /**
      * @var HigherOrderCollectionProxy|mixed
      */
-    public mixed $currentTeam;
+    public mixed $currentTeam = null;
 
     /**
      * Get the attributes that should be cast.

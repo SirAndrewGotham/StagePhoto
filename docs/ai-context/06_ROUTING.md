@@ -28,15 +28,22 @@ rresources/views/components/frontend/
     └── ⚡home.blade.php                 ← Home page
 ```
 
-## Protected Routes (Photographer-only)
+### 🌐 Routes (Updated)
 
-```php
-// routes/web.php
-Route::middleware(['auth'])->group(function () {
-    Route::livewire('/albums/{album}/upload', 'frontend.photo-uploader')->name('album.upload');
-    Route::livewire('/trash', 'frontend.trash-manager')->name('trash.manager');
-});
-```
+### Public Routes
+| Method | URI | Component | Name |
+|--------|-----|-----------|------|
+| GET | `/` | `pages::home` | home |
+| GET | `/albums` | `frontend.albums-index` | albums.index |
+| GET | `/album/{album:slug}` | `frontend.album-show` | album.show |
+| GET | `/lang/{locale}` | - | lang.switch |
+
+### Protected Routes (auth required)
+| Method | URI | Component | Name |
+|--------|-----|-----------|------|
+| GET | `/upload` | `frontend.pages.photo-upload` | photo.upload |
+| GET | `/upload/multiple` | `frontend.pages.multiple-photo-upload` | photo.upload.multiple |
+| GET | `/trash` | `frontend.trash-manager` | trash.manager |
 
 ### Page Components
 ```
@@ -73,7 +80,7 @@ Route::livewire('/album/{slug}', 'pages::album-show');
 
 ```blade
 <!-- Embedded component -->
-@livewire('frontend.album-card', ['album' => $album])
+@livewire('frontend.ui.album-card', ['album' => $album])
 
 <!-- With explicit key for loops -->
 @livewire('frontend.album-card', ['album' => $album], key($album['id']))

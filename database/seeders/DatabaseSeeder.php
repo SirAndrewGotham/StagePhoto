@@ -8,13 +8,11 @@ use App\Models\Album;
 use App\Models\Category;
 use App\Models\Photo;
 use App\Models\User;
+use App\Models\Status;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         // Create categories first
@@ -23,9 +21,9 @@ class DatabaseSeeder extends Seeder
         // Create tags
         $this->call(TagSeeder::class);
 
-        // Create a test photographer if none exists
+        // Create a test photographer
         $photographer = User::first();
-        if (! $photographer) {
+        if (!$photographer) {
             $photographer = User::create([
                 'name' => 'Test Photographer',
                 'email' => 'photographer@stagephoto.test',
@@ -33,113 +31,94 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Create an unsorted album for the photographer (direct creation, not factory)
+        // Create admin user
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@stagephoto.test'],
+            [
+                'name' => 'Administrator',
+                'password' => bcrypt('password'),
+            ]
+        );
+
+        // Create unsorted album
         Album::create([
             'title' => 'Unsorted',
-            'slug' => 'unsorted-'.$photographer->id,
-            'description' => 'Automatically created album for unsorted photos. Move photos to other albums to organize them.',
-            'cover_image' => null,
-            'cover_image_square' => null,
-            'cover_image_hero' => null,
+            'slug' => 'unsorted-' . $photographer->id,
+            'description' => 'Automatically created album for unsorted photos.',
             'photographer_id' => $photographer->id,
             'event_date' => now(),
             'is_published' => false,
             'is_unsorted' => true,
+            'status' => 'pending',
             'badge' => '📁 UNSORTED',
             'badge_gradient' => 'from-gray-500 to-gray-600',
         ]);
 
-        // Create 50 random published albums with photos
-        $this->createAlbumsWithPhotos(50, $photographer, 'published');
+        // Create albums with different statuses
+        $this->createAlbumsWithPhotos(10, $photographer, 'published');
+        $this->createAlbumsWithPhotos(5, $photographer, 'pending');
+        $this->createAlbumsWithPhotos(3, $photographer, 'approved');
+        $this->createAlbumsWithPhotos(2, $photographer, 'rejected');
 
-        // Create 10 featured albums
-        $this->createAlbumsWithPhotos(10, $photographer, 'featured');
-
-        // Create 5 NEW albums (fresh)
-        $this->createAlbumsWithPhotos(5, $photographer, 'fresh');
-
-        // Create 10 highly rated albums
-        $this->createAlbumsWithPhotos(10, $photographer, 'highlyRated');
-
-        // Create 10 popular albums
-        $this->createAlbumsWithPhotos(10, $photographer, 'popular');
+        // Create featured published albums
+        $this->createAlbumsWithPhotos(5, $photographer, 'published', true);
 
         // Create specific genre albums
         $genres = ['rock', 'metal', 'jazz', 'classical', 'folk', 'drama', 'ballet', 'opera'];
         foreach ($genres as $genre) {
-            $this->createAlbumsForGenre(5, $photographer, $genre);
+            $this->createAlbumsForGenre(3, $photographer, $genre);
         }
 
-        // Create 5 unpublished (draft) albums
-        $this->createAlbumsWithPhotos(5, $photographer, 'unpublished');
-
-        // Call remaining seeders
-        $this->call([
-            RoleSeeder::class,
-            GenreSeeder::class,
-            UserSeeder::class,
-            BookingRequestSeeder::class,
-            CommentSeeder::class,
-            RatingSeeder::class,
-        ]);
-
         $this->command->info('✓ Database seeding completed successfully!');
-        $this->command->info('Total albums: '.Album::count());
-        $this->command->info('Total photos: '.Photo::count());
+        $this->command->info('Total albums: ' . Album::count());
+        $this->command->info('Total photos: ' . Photo::count());
+        $this->command->info('Total status records: ' . Status::count());
     }
 
-    /**
-     * Helper method to create albums with photos
-     */
-    private function createAlbumsWithPhotos(int $count, User $photographer, string $type = 'published'): void
+    private function createAlbumsWithPhotos(int $count, User $photographer, string $status, bool $featured = false): void
     {
         for ($i = 0; $i < $count; $i++) {
-            // Create the album
             $album = Album::factory()
-                ->forPhotographer($photographer);
+                ->$status()
+                ->forPhotographer($photographer)
+                ->create();
 
-            // Apply type-specific state
-            $album = match ($type) {
-                'featured' => $album->featured(),
-                'fresh' => $album->fresh()->recent(),
-                'highlyRated' => $album->highlyRated(),
-                'popular' => $album->popular(),
-                'unpublished' => $album->unpublished(),
-                default => $album->published(),
-            };
+            if ($featured) {
+                $album->update(['badge' => '🔥 FEATURED', 'badge_gradient' => 'from-indigo-600 to-purple-600']);
+            }
 
-            $album = $album->create();
-
-            // Attach 1-2 random categories
-            $categories = Category::inRandomOrder()->limit(random_int(1, 2))->pluck('id');
+            // Attach random categories
+            $categories = Category::inRandomOrder()->limit(rand(1, 2))->pluck('id');
             $album->categories()->attach($categories);
 
-            // Create 5-20 photos for the album
-            $photoCount = random_int(5, 20);
+            // Create status history
+            $this->createStatusHistory($album, $status);
+
+            // Create photos
+            $photoCount = rand(5, 20);
             for ($j = 0; $j < $photoCount; $j++) {
-                Photo::factory()
+                $photo = Photo::factory()
                     ->forAlbum($album)
+                    ->$status()
                     ->create([
                         'sort_order' => $j,
                         'is_featured' => $j === 0,
                     ]);
+
+                // Create photo status history
+                $this->createStatusHistory($photo, $status);
             }
 
-            // Update photo count
             $album->update(['photo_count' => $photoCount]);
         }
     }
 
-    /**
-     * Helper method to create albums for specific genre
-     */
     private function createAlbumsForGenre(int $count, User $photographer, string $genreSlug): void
     {
         $category = Category::where('slug', $genreSlug)->first();
 
-        if (! $category) {
+        if (!$category) {
             $this->command->warn("Category '{$genreSlug}' not found, skipping...");
-
             return;
         }
 
@@ -149,14 +128,13 @@ class DatabaseSeeder extends Seeder
                 ->forPhotographer($photographer)
                 ->create();
 
-            // Attach the specific genre category
             $album->categories()->attach($category->id);
 
-            // Create 5-15 photos
-            $photoCount = random_int(5, 15);
+            $photoCount = rand(5, 15);
             for ($j = 0; $j < $photoCount; $j++) {
                 Photo::factory()
                     ->forAlbum($album)
+                    ->published()
                     ->create([
                         'sort_order' => $j,
                         'is_featured' => $j === 0,
@@ -164,6 +142,55 @@ class DatabaseSeeder extends Seeder
             }
 
             $album->update(['photo_count' => $photoCount]);
+        }
+    }
+
+    private function createStatusHistory($model, string $finalStatus): void
+    {
+        $admin = User::where('email', 'admin@stagephoto.test')->first();
+        $photographer = User::where('email', 'photographer@stagephoto.test')->first();
+
+        // Always start with pending
+        Status::create([
+            'statusable_id' => $model->id,
+            'statusable_type' => get_class($model),
+            'status' => 'pending',
+            'comment' => 'Initial submission',
+            'changed_by' => $photographer->id,
+            'created_at' => now()->subDays(5),
+        ]);
+
+        if ($finalStatus === 'approved' || $finalStatus === 'published') {
+            Status::create([
+                'statusable_id' => $model->id,
+                'statusable_type' => get_class($model),
+                'status' => 'approved',
+                'comment' => 'Approved by admin',
+                'changed_by' => $admin->id,
+                'created_at' => now()->subDays(3),
+            ]);
+        }
+
+        if ($finalStatus === 'published') {
+            Status::create([
+                'statusable_id' => $model->id,
+                'statusable_type' => get_class($model),
+                'status' => 'published',
+                'comment' => 'Published to public',
+                'changed_by' => $admin->id,
+                'created_at' => now()->subDays(1),
+            ]);
+        }
+
+        if ($finalStatus === 'rejected') {
+            Status::create([
+                'statusable_id' => $model->id,
+                'statusable_type' => get_class($model),
+                'status' => 'rejected',
+                'comment' => 'Does not meet quality standards. Please review guidelines.',
+                'changed_by' => $admin->id,
+                'created_at' => now()->subDays(2),
+            ]);
         }
     }
 }

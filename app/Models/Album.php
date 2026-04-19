@@ -153,4 +153,34 @@ class Album extends Model
     {
         return $query->where('is_published', true)->whereNull('deleted_at');
     }
+
+    public function statuses(): MorphMany
+    {
+        return $this->morphMany(Status::class, 'statusable');
+    }
+
+    public function currentStatus()
+    {
+        return $this->statuses()->latest()->first();
+    }
+
+    public function addStatus(string $status, ?string $comment = null): void
+    {
+        $this->statuses()->create([
+            'status' => $status,
+            'comment' => $comment,
+            'changed_by' => auth()->id(),
+        ]);
+
+        $this->update([
+            'status' => $status,
+            'approved_by' => $status === 'approved' || $status === 'published' ? auth()->id() : null,
+            'approved_at' => $status === 'approved' || $status === 'published' ? now() : null,
+        ]);
+    }
+
+    public function canBeViewedByPublic(): bool
+    {
+        return $this->is_published && $this->status === 'published';
+    }
 }

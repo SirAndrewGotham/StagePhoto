@@ -23,20 +23,40 @@
 - **Rating system** - 5-star ratings with user persistence
 - **Like system** - Like/unlike comments
 
-### 📸 For Photographers
-- **Album management** - Create, edit, publish, and delete albums
-- **Photo upload** - Single, multiple, and ZIP archive uploads
-- **Image processing** - Automatic WebP conversion and optimization
-- **Watermark protection** - Automatic watermark application
-- **Unsorted album** - Default album for unorganized uploads
-- **Bulk operations** - Move multiple photos between albums
-- **Trash management** - Soft delete with restore functionality
+### 📸 For Photographers (Updated)
+- **Album management** - Create, edit, publish/unpublish, and delete albums with soft delete
+- **Photo upload** - Single and multiple photo uploads with drag-and-drop support
+- **Image processing** - Automatic WebP conversion and optimization (Intervention Image v4)
+- **EXIF extraction** - Automatic camera settings, capture date, and GPS data extraction
+- **Status workflow** - Albums go through pending → approved → published workflow
+- **Album covers** - Auto-generates square (800×800) and hero (2000×800) covers
+- **Unsorted album** - Default album for unorganized uploads with bulk organization
+- **Trash management** - Soft delete with restore and permanent delete options
+
+### 🎯 For Visitors (Updated)
+- **Album browsing** - Browse published albums with grid/list views
+- **Photographer portfolios** - Each photographer has a dedicated albums page
 
 ### 🎯 For Bands & Organizers
 - **Photographer requests** - Request specific photographers
 - **High-res downloads** - Request high-resolution photos
 - **Print permissions** - Request print rights
 - **Commercial licensing** - Request commercial usage rights
+
+## 📋 Approval Workflow
+
+### Album Status Flow
+1. **Pending** - Album submitted, waiting for admin review
+2. **Approved** - Album approved by admin, ready for publication
+3. **Published** - Album visible to public
+4. **Rejected** - Album rejected with feedback comments
+5. **Blocked** - Album blocked due to policy violation
+
+### Status History
+All status changes are tracked with:
+- Who changed the status
+- When the change occurred
+- Comments/reasons for the change
 
 ---
 
@@ -162,29 +182,56 @@ lang/                        # Multi-language files
 
 ---
 
-## 🖼️ Image Processing
+## 🖼️ Image Processing (Intervention Image v4)
 
-All uploaded images are automatically processed:
+All uploaded images are automatically processed using Intervention Image v4:
 
-| Variant | Dimensions | Watermark | Usage |
-|---------|------------|-----------|-------|
-| Original | User-uploaded | No | Archival |
-| Full-size | 1600px max side | Yes | Photo modal |
-| Thumbnail | 600×600 (crop) | Yes | Grid preview |
-| Cover Square | 800×800 | No | Album cards |
-| Cover Hero | 2000×800 | No | Album header |
+| Variant | Dimensions | Format | Quality | Usage |
+|---------|------------|--------|---------|-------|
+| Original | User-uploaded | Preserved | 100% | Archival |
+| Full-size | 1600px max side | WebP | 85% | Photo modal |
+| Thumbnail | 600×600 (center crop) | WebP | 80% | Grid preview |
+| Cover Square | 800×800 (center crop) | WebP | 85% | Album cards |
+| Cover Hero | 2000×800 (cover crop) | WebP | 85% | Album header |
 
-**Storage structure:**
+### EXIF Data Extracted
+- Camera make and model
+- Lens model
+- Focal length, aperture, shutter speed, ISO
+- Capture date/time
+- GPS coordinates (if available)
+
+### Storage Structure
 ```
 storage/app/public/stagephoto/
-├── originals/{user_id}/{album_id}/
+├── originals/{user_id}/{album_id}/{photo_id}_original.{ext}
 ├── webp/{user_id}/{album_id}/
-│   ├── {photo_id}_full.webp
-│   └── {photo_id}_thumb.webp
+│ ├── {photo_id}_full.webp
+│ └── {photo_id}_thumb.webp
 └── albums/{user_id}/{album_id}/
-    ├── cover_square.webp
-    └── cover_hero.webp
+├── cover_square.webp
+└── cover_hero.webp
 ```
+
+---
+
+## 📤 Upload System
+
+### Single Photo Upload
+Photographers can upload single photos with:
+- **Album selection** - Choose existing album or create a new one
+- **Title & description** - Optional metadata for better organization
+- **EXIF data extraction** - Automatically captures camera make/model, lens, settings, and GPS
+- **WebP conversion** - All images are converted to WebP format with optimized quality
+- **Automatic thumbnails** - 600×600 center-cropped thumbnails for grid display
+- **Full-size optimization** - 1600px max dimension for modal viewing
+
+### Upload Workflow
+1. Select or create an album
+2. Choose a photo file (JPG, PNG, GIF, WebP, max 50MB)
+3. Add optional title and description
+4. Submit - system processes and stores all variants
+5. First photo in album automatically becomes the album cover
 
 ---
 

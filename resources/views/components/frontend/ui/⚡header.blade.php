@@ -3,7 +3,12 @@
 use Livewire\Component;
 
 new class extends Component {
-    // Header component logic
+    public $currentTeam;
+
+    public function mount($currentTeam = null): void
+    {
+        $this->currentTeam = $currentTeam;
+    }
 };
 
 ?>
@@ -31,57 +36,31 @@ new class extends Component {
             </div>
 
             <!-- Language Switcher -->
-{{--            <div class="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl p-1 gap-1">--}}
-{{--                <button--}}
-{{--                    onclick="setLanguage('ru')"--}}
-{{--                    class="lang-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all--}}
-{{--                        {{ app()->getLocale() === 'ru' ? 'active bg-stage-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-white/50' }}"--}}
-{{--                    title="Русский"--}}
-{{--                >--}}
-{{--                    RU--}}
-{{--                </button>--}}
-{{--                <button--}}
-{{--                    @click="setLanguage('en')"--}}
-{{--                    class="lang-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all--}}
-{{--                        {{ app()->getLocale() === 'en' ? 'active bg-stage-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-white/50' }}"--}}
-{{--                    title="English"--}}
-{{--                >--}}
-{{--                    EN--}}
-{{--                </button>--}}
-{{--                <button--}}
-{{--                    @click="setLanguage('eo')"--}}
-{{--                    class="lang-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all--}}
-{{--                        {{ app()->getLocale() === 'eo' ? 'active bg-stage-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-white/50' }}"--}}
-{{--                    title="Esperanto"--}}
-{{--                >--}}
-{{--                    EO--}}
-{{--                </button>--}}
-{{--            </div>--}}
             <div class="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl p-1 gap-1">
-                <a
-                    href="/lang/ru"
+                <button
+                    @click="setLanguage('ru')"
                     class="lang-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all
-            {{ app()->getLocale() === 'ru' ? 'active bg-stage-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-white/50' }}"
+                        {{ app()->getLocale() === 'ru' ? 'active bg-stage-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-white/50' }}"
                     title="Русский"
                 >
                     RU
-                </a>
-                <a
-                    href="/lang/en"
+                </button>
+                <button
+                    @click="setLanguage('en')"
                     class="lang-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all
-            {{ app()->getLocale() === 'en' ? 'active bg-stage-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-white/50' }}"
+                        {{ app()->getLocale() === 'en' ? 'active bg-stage-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-white/50' }}"
                     title="English"
                 >
                     EN
-                </a>
-                <a
-                    href="/lang/eo"
+                </button>
+                <button
+                    @click="setLanguage('eo')"
                     class="lang-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all
-            {{ app()->getLocale() === 'eo' ? 'active bg-stage-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-white/50' }}"
+                        {{ app()->getLocale() === 'eo' ? 'active bg-stage-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-white/50' }}"
                     title="Esperanto"
                 >
                     EO
-                </a>
+                </button>
             </div>
 
             <!-- Dark Mode Toggle -->

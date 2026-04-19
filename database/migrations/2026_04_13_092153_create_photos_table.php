@@ -27,9 +27,30 @@ return new class extends Migration
             $table->string('hash', 64)->nullable();  // Remove ->unique() for SQLite compatibility
             $table->bigInteger('file_size')->nullable();
             $table->string('mime_type')->nullable();
+
+            // exif
+            $table->json('exif_data')->nullable()->after('description');
+            $table->string('camera_make')->nullable()->after('exif_data');
+            $table->string('camera_model')->nullable()->after('camera_make');
+            $table->string('lens_model')->nullable()->after('camera_model');
+            $table->string('focal_length')->nullable()->after('lens_model');
+            $table->string('aperture')->nullable()->after('focal_length');
+            $table->string('shutter_speed')->nullable()->after('aperture');
+            $table->string('iso')->nullable()->after('shutter_speed');
+            $table->timestamp('captured_at')->nullable()->after('iso');
+            $table->string('gps_latitude')->nullable()->after('captured_at');
+            $table->string('gps_longitude')->nullable()->after('gps_latitude');
+
+            // statuses
+            $table->string('status')->default('pending')->after('is_featured');
+            $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->timestamp('approved_at')->nullable();
+
+            // timestamps
             $table->timestamps();
             $table->softDeletes();
 
+            // indexes
             $table->index('hash');
             $table->index('sort_order');
             $table->index('album_id');

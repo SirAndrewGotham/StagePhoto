@@ -20,7 +20,8 @@
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
 <!-- Header with Team Context -->
-<x-frontend.header :currentTeam="$team" />
+{{--<x-frontend.ui.header :currentTeam="$team" />--}}
+@livewire('frontend.ui.header', ['currentTeam' => $team])
 
 <!-- Filter Bar -->
 {{--<x-filter-bar :team="$team" />--}}
@@ -31,7 +32,9 @@
 </main>
 
 <!-- Footer -->
-<x-frontend.footer />
+{{--<x-frontend.ui.footer />--}}
+@livewire('frontend.ui.footer', ['currentTeam' => $team])
+@livewire('frontend.ui.request-modal')
 
 @livewireScripts
 @folioScripts

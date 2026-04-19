@@ -59,7 +59,7 @@
     <div wire:loading.remove>
         <div class="masonry-grid">
             @foreach($albums as $album)
-                @livewire('frontend.album-card', ['album' => $album], key($album['id']))
+                @livewire('frontend.ui.album-card', ['album' => $album], key($album['id']))
             @endforeach
         </div>
     </div>

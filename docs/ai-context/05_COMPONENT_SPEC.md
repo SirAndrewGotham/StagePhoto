@@ -40,6 +40,44 @@
 - **Rating System**: 5-star rating with user persistence
 - **Comment System**: Threaded comments with likes
 
+## 📸 Photo Upload Component (`⚡photo-upload.blade.php`)
+
+- **Purpose**: Single photo upload interface for photographers
+- **Location**: `resources/views/components/frontend/pages/⚡photo-upload.blade.php`
+- **Route**: `/upload` (authenticated users only)
+
+### Features
+- Album selection (existing or create new)
+- File upload with validation (image, max 50MB)
+- Optional title and description fields
+- Automatic EXIF data extraction
+- Processing indicator with loading state
+- Success modal with confirmation
+- Error handling with user-friendly messages
+
+### Form Fields
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| Album selection | Radio + Select/Create | Yes | Choose existing or create new album |
+| New album title | Text | If creating new | Title for new album |
+| Photo file | File | Yes | Image file (JPG, PNG, GIF, WebP) |
+| Photo title | Text | No | Custom title for the photo |
+| Photo description | Textarea | No | Description of the photo |
+
+### Processing Steps
+1. Validate input
+2. Get or create target album
+3. Process upload via ImageProcessingService
+4. Create photo record in database
+5. Update album photo count
+6. Generate album covers if first photo
+7. Display success modal with results
+
+### Dependencies
+- `ImageProcessingService` - Image processing logic
+- `UnsortedAlbumService` - Fallback album for unassigned uploads
+- `ExifExtractorService` - EXIF data extraction
+
 ### Request Modal (`⚡request-modal.blade.php`)
 - **Request Types**:
     - Personal Use (wallpaper, social media)
@@ -50,6 +88,40 @@
 - **Conditional Fields**: Event date, venue, budget (for hire requests)
 - **Auto-fill**: Pre-fills name/email for logged-in users
 - **Storage**: Saves to `requests` table with status tracking
+
+## 📁 Albums Index Component (`⚡albums-index.blade.php`)
+
+- **Purpose**: Browse and manage albums (public + photographer views)
+- **Location**: `resources/views/components/frontend/⚡albums-index.blade.php`
+- **Route**: `/albums` (public access)
+
+### Features
+
+#### Public View
+- Browse all published albums
+- Grid and list view modes
+- Search by album title
+- Sort by date, photo count, views
+- Responsive design
+
+#### Photographer View (when authenticated)
+- "My Albums" toggle to see own albums
+- Album statistics (total, published, pending)
+- Management tools per album:
+    - Publish/Unpublish
+    - Delete (move to trash)
+- Status badges (pending, approved, published, rejected)
+- Unsorted album card with photo count
+
+### Query Logic
+```php
+// Public view
+Album::where('is_published', true)
+     ->where('status', 'published')
+
+// Photographer view  
+Album::where('photographer_id', auth()->id())
+```
 
 ### Rating System
 - **Database**: `ratings` table (polymorphic)
