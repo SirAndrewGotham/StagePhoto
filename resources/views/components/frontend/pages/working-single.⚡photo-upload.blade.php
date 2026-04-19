@@ -10,15 +10,15 @@ use App\Models\Album;
 new class extends Component {
     use WithFileUploads;
 
-    public $currentTeam = null;
+    public $currentTeam;
 
     // Album selection
-    public $selectedAlbumId = null;
+    public $selectedAlbumId;
     public $createNewAlbum = false;
     public $newAlbumTitle = '';
 
     // Photo data
-    public $photo = null;
+    public $photo;
     public $photoTitle = '';
     public $photoDescription = '';
 
@@ -34,12 +34,12 @@ new class extends Component {
     public function boot(
         ImageProcessingService $imageService,
         UnsortedAlbumService $unsortedService
-    ) {
+    ): void {
         $this->imageService = $imageService;
         $this->unsortedService = $unsortedService;
     }
 
-    public function mount($currentTeam = null)
+    public function mount($currentTeam = null): void
     {
         $this->currentTeam = $currentTeam;
     }
@@ -52,7 +52,7 @@ new class extends Component {
             ->get();
     }
 
-    public function save()
+    public function save(): void
     {
 //        \Log::info('Upload started', [
 //            'photo_exists' => $this->photo !== null,
@@ -105,7 +105,7 @@ new class extends Component {
         $this->isProcessing = false;
     }
 
-    public function closeSuccess()
+    public function closeSuccess(): void
     {
         $this->showSuccess = false;
         $this->successMessage = '';

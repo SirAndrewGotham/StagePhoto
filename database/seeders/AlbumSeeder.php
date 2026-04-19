@@ -7,8 +7,8 @@ namespace Database\Seeders;
 use App\Models\Album;
 use App\Models\Category;
 use App\Models\Photo;
-use App\Models\User;
 use App\Models\Status;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -201,7 +201,7 @@ class AlbumSeeder extends Seeder
             $photoId = (string) Str::uuid();
             $baseUrl = $photoUrls[$i % count($photoUrls)];
 
-            $photoStatus = $album->status === 'published' ? 'published' : $album->status;
+            $photoStatus = $album->status;
 
             $photo = Photo::create([
                 'id' => $photoId,
@@ -253,7 +253,7 @@ class AlbumSeeder extends Seeder
             Photo::create([
                 'id' => $photoId,
                 'album_id' => $album->id,
-                'title' => 'Pending Photo ' . ($i + 1),
+                'title' => 'Pending Photo '.($i + 1),
                 'description' => 'This photo is pending approval.',
                 'original_path' => "stagephoto/originals/{$photographer->id}/{$album->id}/{$photoId}_original.jpg",
                 'full_path' => "stagephoto/webp/{$photographer->id}/{$album->id}/{$photoId}_full.webp",

@@ -12,7 +12,7 @@ new class extends Component {
         'photo.upload.zip' => ['icon' => '🗜️', 'label' => 'ZIP Archive'],
     ];
 
-    public function mount()
+    public function mount(): void
     {
         $this->currentRoute = request()->route()->getName();
         $this->activeTab = $this->currentRoute;

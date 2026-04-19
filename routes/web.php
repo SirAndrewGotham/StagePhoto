@@ -15,7 +15,7 @@ Route::get('/lang/{locale}', function ($locale) {
     $supportedLocales = ['ru', 'en', 'eo'];
 
     if (in_array($locale, $supportedLocales)) {
-        // Set cookie
+        // Set cookie (1 year)
         cookie()->queue('language', $locale, 60 * 24 * 365);
 
         // Set session
@@ -25,10 +25,20 @@ Route::get('/lang/{locale}', function ($locale) {
         app()->setLocale($locale);
     }
 
-    // Redirect back to previous page
+    // If it's an AJAX request, return JSON response
+    if (request()->ajax() || request()->wantsJson()) {
+        return response()->json([
+            'success' => true,
+            'locale' => $locale,
+            'redirect' => url()->previous(),
+        ]);
+    }
+
+    // Otherwise redirect back
     return redirect()->back();
 })->name('lang.switch');
 
+// Home route
 Route::livewire('/', 'frontend.pages.⚡home')->name('home');
 
 // Photo routes
@@ -37,9 +47,6 @@ Route::livewire('/photo/{photo}', 'frontend.pages.photo-show')->name('photo.show
 // Album routes
 Route::livewire('/albums', 'frontend.pages.albums-index')->name('albums.index');
 Route::livewire('/album/{album:slug}', 'frontend.pages.⚡album-show')->name('album.show');
-
-// Home route
-Route::livewire('/', 'frontend.pages.home');
 
 // Protected routes for photographers
 Route::middleware(['auth'])->group(function () {
@@ -54,7 +61,6 @@ Route::middleware(['auth'])->group(function () {
     // Trash manager
     Route::livewire('/trash', 'frontend.trash-manager')->name('trash.manager');
 });
-
 
 // Protected routes for photographers
 // Route::middleware(['auth'])->prefix('photographer')->name('photographer.')->group(function () {

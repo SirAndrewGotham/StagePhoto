@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Factories;
 
+use App\Models\Album;
 use App\Models\Category;
 use App\Models\Photo;
 use App\Models\Status;
@@ -155,7 +156,7 @@ class PhotoFactoryTest extends TestCase
 
     public function test_photo_factory_for_specific_album(): void
     {
-        $album = \App\Models\Album::factory()->create();
+        $album = Album::factory()->create();
         $photo = Photo::factory()->forAlbum($album)->create();
 
         $this->assertEquals($album->id, $photo->album_id);

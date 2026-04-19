@@ -1,27 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
-use App\Models\Photo;
 use App\Models\Album;
+use App\Models\Photo;
 use Illuminate\Http\UploadedFile;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\WebpEncoder;
+use Intervention\Image\ImageManager;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ImageProcessingService
 {
-    protected $manager;
-    protected ExifExtractorService $exifExtractor;
+    protected ImageManager $manager;
 
-    public function __construct(ExifExtractorService $exifExtractor)
+    public function __construct(protected ExifExtractorService $exifExtractor)
     {
         // Intervention Image v4.0.1 requires a driver instance
-        $this->manager = new ImageManager(new Driver());
-        $this->exifExtractor = $exifExtractor;
+        $this->manager = new ImageManager(new Driver);
 
         \Log::info('ImageProcessingService initialized with GdDriver');
     }
@@ -29,7 +29,7 @@ class ImageProcessingService
     /**
      * Process an image - using decodePath for v4.0.1
      */
-    private function processImage($filePath, callable $callback)
+    private function processImage(string|\Stringable $filePath, callable $callback)
     {
         \Log::info('processImage: starting', ['filePath' => $filePath]);
 
@@ -39,13 +39,14 @@ class ImageProcessingService
 
             \Log::info('processImage: image created successfully', [
                 'width' => $image->width(),
-                'height' => $image->height()
+                'height' => $image->height(),
             ]);
             $callback($image);
+
             return $image;
         } catch (\Exception $e) {
-            \Log::error('processImage failed: ' . $e->getMessage());
-            throw new \Exception('Unable to initialize image processing: ' . $e->getMessage());
+            \Log::error('processImage failed: '.$e->getMessage());
+            throw new \Exception('Unable to initialize image processing: '.$e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -132,7 +133,7 @@ class ImageProcessingService
             }
             \Log::info('Step 5: no duplicate found');
         } catch (\Exception $e) {
-            \Log::error('Step 5 failed: ' . $e->getMessage());
+            \Log::error('Step 5 failed: '.$e->getMessage());
             throw $e;
         }
 
@@ -142,7 +143,7 @@ class ImageProcessingService
             $extension = $this->getExtension($file);
             \Log::info('Step 6: original name', ['name' => $originalName, 'extension' => $extension]);
         } catch (\Exception $e) {
-            \Log::error('Step 6 failed: ' . $e->getMessage());
+            \Log::error('Step 6 failed: '.$e->getMessage());
             throw $e;
         }
 
@@ -151,7 +152,7 @@ class ImageProcessingService
             $originalPath = $this->storeOriginal($filePath, $album->photographer_id, $album->id, $photoId, $extension);
             \Log::info('Step 7: original stored', ['original_path' => $originalPath]);
         } catch (\Exception $e) {
-            \Log::error('Step 7 failed: ' . $e->getMessage());
+            \Log::error('Step 7 failed: '.$e->getMessage());
             throw $e;
         }
 
@@ -160,8 +161,8 @@ class ImageProcessingService
             $thumbPath = $this->generateThumbnail($filePath, $album->photographer_id, $album->id, $photoId);
             \Log::info('Step 8: thumbnail generated', ['thumb_path' => $thumbPath]);
         } catch (\Exception $e) {
-            \Log::error('Step 8 failed: ' . $e->getMessage());
-            \Log::error('Step 8 exception trace: ' . $e->getTraceAsString());
+            \Log::error('Step 8 failed: '.$e->getMessage());
+            \Log::error('Step 8 exception trace: '.$e->getTraceAsString());
             throw $e;
         }
 
@@ -169,7 +170,7 @@ class ImageProcessingService
             $fullPath = $this->generateFullImage($filePath, $album->photographer_id, $album->id, $photoId);
             \Log::info('Step 9: full image generated', ['full_path' => $fullPath]);
         } catch (\Exception $e) {
-            \Log::error('Step 9 failed: ' . $e->getMessage());
+            \Log::error('Step 9 failed: '.$e->getMessage());
             throw $e;
         }
 
@@ -201,7 +202,7 @@ class ImageProcessingService
             ]);
             \Log::info('Step 10: photo record created', ['photo_id' => $photo->id]);
         } catch (\Exception $e) {
-            \Log::error('Step 10 failed: ' . $e->getMessage());
+            \Log::error('Step 10 failed: '.$e->getMessage());
             throw $e;
         }
 
@@ -209,7 +210,7 @@ class ImageProcessingService
             $album->increment('photo_count');
             \Log::info('Step 11: photo count incremented');
         } catch (\Exception $e) {
-            \Log::error('Step 11 failed: ' . $e->getMessage());
+            \Log::error('Step 11 failed: '.$e->getMessage());
             throw $e;
         }
 
@@ -220,7 +221,7 @@ class ImageProcessingService
                 \Log::info('Step 12: album cover set');
             }
         } catch (\Exception $e) {
-            \Log::error('Step 12 failed: ' . $e->getMessage());
+            \Log::error('Step 12 failed: '.$e->getMessage());
             throw $e;
         }
 
@@ -238,7 +239,7 @@ class ImageProcessingService
         $fullPath = Storage::disk('public')->path($path);
 
         $dir = dirname($fullPath);
-        if (!file_exists($dir)) {
+        if (! file_exists($dir)) {
             mkdir($dir, 0755, true);
         }
 
@@ -250,7 +251,7 @@ class ImageProcessingService
     /**
      * Generate thumbnail (600x600 square crop)
      */
-    protected function generateThumbnail($filePath, $userId, $albumId, $photoId): string
+    protected function generateThumbnail(string|\Stringable $filePath, $userId, $albumId, $photoId): string
     {
         \Log::info('generateThumbnail: starting', ['filePath' => $filePath]);
 
@@ -258,7 +259,7 @@ class ImageProcessingService
         $encoded = null;
 
         try {
-            $this->processImage($filePath, function($image) use (&$outputPath, $userId, $albumId, $photoId, &$encoded) {
+            $this->processImage($filePath, function ($image) use (&$outputPath, $userId, $albumId, $photoId, &$encoded) {
                 \Log::info('generateThumbnail: image loaded');
 
                 $width = $image->width();
@@ -269,7 +270,7 @@ class ImageProcessingService
                 $x = ($width - $size) / 2;
                 $y = ($height - $size) / 2;
 
-                $image->crop($size, $size, (int)$x, (int)$y);
+                $image->crop($size, $size, (int) $x, (int) $y);
                 \Log::info('generateThumbnail: cropped');
 
                 $image->resize(600, 600);
@@ -283,7 +284,7 @@ class ImageProcessingService
 
             $fullPath = Storage::disk('public')->path($outputPath);
             $dir = dirname($fullPath);
-            if (!file_exists($dir)) {
+            if (! file_exists($dir)) {
                 mkdir($dir, 0755, true);
                 \Log::info('generateThumbnail: created directory', ['dir' => $dir]);
             }
@@ -294,8 +295,8 @@ class ImageProcessingService
             return $outputPath;
 
         } catch (\Exception $e) {
-            \Log::error('generateThumbnail failed: ' . $e->getMessage());
-            \Log::error('generateThumbnail trace: ' . $e->getTraceAsString());
+            \Log::error('generateThumbnail failed: '.$e->getMessage());
+            \Log::error('generateThumbnail trace: '.$e->getTraceAsString());
             throw $e;
         }
     }
@@ -303,14 +304,14 @@ class ImageProcessingService
     /**
      * Generate full-size image (1600px max side)
      */
-    protected function generateFullImage($filePath, $userId, $albumId, $photoId): string
+    protected function generateFullImage(string|\Stringable $filePath, $userId, $albumId, $photoId): string
     {
         \Log::info('generateFullImage: starting', ['filePath' => $filePath]);
 
         $outputPath = null;
         $encoded = null;
 
-        $this->processImage($filePath, function($image) use (&$outputPath, $userId, $albumId, $photoId, &$encoded) {
+        $this->processImage($filePath, function ($image) use (&$outputPath, $userId, $albumId, $photoId, &$encoded) {
             \Log::info('generateFullImage: image loaded');
 
             // Resize to max 1600px on longest side
@@ -332,7 +333,7 @@ class ImageProcessingService
 
         $fullPath = Storage::disk('public')->path($outputPath);
         $dir = dirname($fullPath);
-        if (!file_exists($dir)) {
+        if (! file_exists($dir)) {
             mkdir($dir, 0755, true);
         }
 
@@ -403,7 +404,7 @@ class ImageProcessingService
         $outputPath = null;
         $encoded = null;
 
-        $this->processImage($fullPath, function($image) use ($photo, &$outputPath, &$encoded) {
+        $this->processImage($fullPath, function ($image) use ($photo, &$outputPath, &$encoded) {
             // Get dimensions
             $width = $image->width();
             $height = $image->height();
@@ -413,7 +414,7 @@ class ImageProcessingService
             $x = ($width - $size) / 2;
             $y = ($height - $size) / 2;
 
-            $image->crop($size, $size, (int)$x, (int)$y);
+            $image->crop($size, $size, (int) $x, (int) $y);
 
             // Resize to 800x800
             $image->resize(800, 800);
@@ -426,7 +427,7 @@ class ImageProcessingService
 
         $fullOutputPath = Storage::disk('public')->path($outputPath);
         $dir = dirname($fullOutputPath);
-        if (!file_exists($dir)) {
+        if (! file_exists($dir)) {
             mkdir($dir, 0755, true);
         }
 
@@ -445,7 +446,7 @@ class ImageProcessingService
         $outputPath = null;
         $encoded = null;
 
-        $this->processImage($fullPath, function($image) use ($photo, &$outputPath, &$encoded) {
+        $this->processImage($fullPath, function ($image) use ($photo, &$outputPath, &$encoded) {
             // Cover crop to 2000x800 - using cover() instead of fit() for v4
             $image->cover(2000, 800);
 
@@ -457,7 +458,7 @@ class ImageProcessingService
 
         $fullOutputPath = Storage::disk('public')->path($outputPath);
         $dir = dirname($fullOutputPath);
-        if (!file_exists($dir)) {
+        if (! file_exists($dir)) {
             mkdir($dir, 0755, true);
         }
 
@@ -494,13 +495,13 @@ class ImageProcessingService
         $skippedCount = 0;
 
         // Create temp directory
-        $tempDir = storage_path("app/temp/" . Str::uuid());
-        if (!file_exists($tempDir)) {
+        $tempDir = storage_path('app/temp/'.Str::uuid());
+        if (! file_exists($tempDir)) {
             mkdir($tempDir, 0755, true);
         }
 
         // Extract ZIP
-        $zip = new \ZipArchive();
+        $zip = new \ZipArchive;
         if ($zip->open($zipFile->getRealPath()) === true) {
             $zip->extractTo($tempDir);
             $zip->close();
@@ -512,12 +513,12 @@ class ImageProcessingService
         // Find all image files (excluding macOS metadata)
         $imageFiles = $this->findImageFiles($tempDir);
 
-        \Log::info('Found ' . count($imageFiles) . ' valid images in ZIP');
+        \Log::info('Found '.count($imageFiles).' valid images in ZIP');
 
         foreach ($imageFiles as $filePath) {
             try {
                 // Check if file is readable and valid
-                if (!is_readable($filePath)) {
+                if (! is_readable($filePath)) {
                     throw new \Exception('File is not readable');
                 }
 
@@ -527,12 +528,12 @@ class ImageProcessingService
                 finfo_close($finfo);
 
                 $validMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-                if (!in_array($mimeType, $validMimeTypes)) {
-                    throw new \Exception('Invalid image format: ' . $mimeType);
+                if (! in_array($mimeType, $validMimeTypes)) {
+                    throw new \Exception('Invalid image format: '.$mimeType);
                 }
 
                 // Create an UploadedFile instance from the extracted file
-                $uploadedFile = new \Illuminate\Http\UploadedFile(
+                $uploadedFile = new UploadedFile(
                     $filePath,
                     basename($filePath),
                     $mimeType,
@@ -543,15 +544,15 @@ class ImageProcessingService
                 // Use filename as title (without extension)
                 $title = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
 
-                $photo = $this->processUpload($uploadedFile, $album, $title, null);
+                $photo = $this->processUpload($uploadedFile, $album, $title);
                 $processed[] = $photo;
 
             } catch (\Exception $e) {
                 $errors[] = [
-                    'file' => basename($filePath),
+                    'file' => basename((string) $filePath),
                     'error' => $e->getMessage(),
                 ];
-                \Log::error('Failed to process file: ' . basename($filePath) . ' - ' . $e->getMessage());
+                \Log::error('Failed to process file: '.basename((string) $filePath).' - '.$e->getMessage());
             }
         }
 
@@ -570,7 +571,7 @@ class ImageProcessingService
     /**
      * Recursively find all image files in a directory
      */
-    private function findImageFiles($directory): array
+    private function findImageFiles(string $directory): array
     {
         $images = [];
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
@@ -593,26 +594,19 @@ class ImageProcessingService
             if ($file->isFile()) {
                 $filename = $file->getFilename();
                 $relativePath = $file->getPathname();
-
-                // Skip excluded files
-                $shouldExclude = false;
-                foreach ($excludePatterns as $pattern) {
-                    if (preg_match($pattern, $filename) || preg_match($pattern, $relativePath)) {
-                        $shouldExclude = true;
-                        break;
-                    }
-                }
+                $shouldExclude = array_any($excludePatterns, fn ($pattern) => preg_match($pattern, (string) $filename) || preg_match($pattern, (string) $relativePath));
 
                 if ($shouldExclude) {
-                    \Log::info('Skipping excluded file: ' . $filename);
+                    \Log::info('Skipping excluded file: '.$filename);
+
                     continue;
                 }
 
-                $extension = strtolower($file->getExtension());
+                $extension = strtolower((string) $file->getExtension());
                 if (in_array($extension, $allowedExtensions)) {
                     $images[] = $file->getPathname();
                 } else {
-                    \Log::info('Skipping non-image file: ' . $filename . ' (extension: ' . $extension . ')');
+                    \Log::info('Skipping non-image file: '.$filename.' (extension: '.$extension.')');
                 }
             }
         }
@@ -623,15 +617,15 @@ class ImageProcessingService
     /**
      * Recursive directory deletion
      */
-    private function deleteDirectory($dir): void
+    private function deleteDirectory(string $dir): void
     {
-        if (!file_exists($dir)) {
+        if (! file_exists($dir)) {
             return;
         }
 
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
-            $path = $dir . '/' . $file;
+            $path = $dir.'/'.$file;
             is_dir($path) ? $this->deleteDirectory($path) : unlink($path);
         }
         rmdir($dir);

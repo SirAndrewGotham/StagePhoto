@@ -7,6 +7,8 @@ namespace Database\Factories;
 use App\Models\Album;
 use App\Models\Category;
 use App\Models\Photo;
+use App\Models\Status;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -210,14 +212,14 @@ class PhotoFactory extends Factory
     /**
      * Create status history for the photo.
      */
-    public function withStatusHistory(array $statuses = null): static
+    public function withStatusHistory(?array $statuses = null): static
     {
         return $this->afterCreating(function (Photo $photo) use ($statuses) {
             $defaultStatuses = $statuses ?? ['pending', 'approved', 'published'];
-            $user = \App\Models\User::first();
+            $user = User::first();
 
             foreach ($defaultStatuses as $index => $status) {
-                \App\Models\Status::create([
+                Status::create([
                     'statusable_id' => $photo->id,
                     'statusable_type' => Photo::class,
                     'status' => $status,
@@ -236,7 +238,7 @@ class PhotoFactory extends Factory
      */
     private function getStatusComment(string $status): string
     {
-        return match($status) {
+        return match ($status) {
             'pending' => 'Initial upload awaiting review',
             'approved' => 'Approved by administrator',
             'published' => 'Published to public',

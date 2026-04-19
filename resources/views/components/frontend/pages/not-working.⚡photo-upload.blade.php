@@ -11,20 +11,20 @@ use App\Models\Category;
 new class extends Component {
     use WithFileUploads;
 
-    public $currentTeam = null;
+    public $currentTeam;
 
     // Album selection
-    public $selectedAlbumId = null;
+    public $selectedAlbumId;
     public $createNewAlbum = false;
     public $newAlbumTitle = '';
     public $newAlbumDescription = '';
 
     // Category selection (only for new albums)
-    public $selectedCategoryId = null;
+    public $selectedCategoryId;
 
     // Upload files - using a simple array
     public $photos = [];
-    public $zipFile = null;
+    public $zipFile;
     public $uploadType = 'single';
 
     // Single photo metadata
@@ -48,19 +48,19 @@ new class extends Component {
     public function boot(
         ImageProcessingService $imageService,
         UnsortedAlbumService $unsortedService
-    ) {
+    ): void {
         $this->imageService = $imageService;
         $this->unsortedService = $unsortedService;
     }
 
-    public function mount($currentTeam = null)
+    public function mount($currentTeam = null): void
     {
         $this->currentTeam = $currentTeam;
         $this->loadUserAlbums();
         $this->loadCategories();
     }
 
-    public function loadUserAlbums()
+    public function loadUserAlbums(): void
     {
         $albums = Album::where('photographer_id', auth()->id())
             ->where('is_unsorted', false)
@@ -77,7 +77,7 @@ new class extends Component {
         }
     }
 
-    public function loadCategories()
+    public function loadCategories(): void
     {
         $categories = Category::active()
             ->orderBy('sort_order')
@@ -93,7 +93,10 @@ new class extends Component {
         }
     }
 
-    protected function rules()
+    /**
+     * @return 'nullable|string|max:255'[]|'nullable|string|max:5000'[]|'required|array|min:1'[]|'required|file|mimes:zip|max:102400'[]|'required|image|max:51200'[]|'required|string|min:3|max:255'[]
+     */
+    protected function rules(): array
     {
         $rules = [];
 
@@ -116,13 +119,13 @@ new class extends Component {
         return $rules;
     }
 
-    public function removePhoto($index)
+    public function removePhoto($index): void
     {
         unset($this->photos[$index]);
         $this->photos = array_values($this->photos);
     }
 
-    public function upload()
+    public function upload(): void
     {
         $this->validate();
         $this->isProcessing = true;
@@ -215,7 +218,7 @@ new class extends Component {
         return $this->unsortedService->getOrCreateUnsortedAlbum(auth()->user());
     }
 
-    private function resetForm()
+    private function resetForm(): void
     {
         $this->photos = [];
         $this->zipFile = null;
@@ -230,7 +233,7 @@ new class extends Component {
         }
     }
 
-    public function closeSuccessModal()
+    public function closeSuccessModal(): void
     {
         $this->showSuccessModal = false;
         $this->results = [];

@@ -9,6 +9,11 @@ new class extends Component {
     {
         $this->currentTeam = $currentTeam;
     }
+
+    public function getCurrentYearProperty()
+    {
+        return now()->year;
+    }
 };
 
 ?>
@@ -55,7 +60,7 @@ new class extends Component {
         </div>
 
         <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400">
-            <p>© 2025 StagePhoto.ru</p>
+            <p>© 2008-{{ date('Y') }} StagePhoto.ru</p>
             <div class="flex items-center gap-4">
                 <span>{{ __('album.made_in') }}</span>
                 <button @click="toggleDarkMode()" class="flex items-center gap-1 hover:text-stage-600 transition-colors">

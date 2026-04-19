@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Illuminate\Support\Facades\Log;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ExifExtractorService
 {
@@ -21,7 +23,7 @@ class ExifExtractorService
 
         $result = $this->getEmptyExifData();
 
-        if (!function_exists('exif_read_data')) {
+        if (! function_exists('exif_read_data')) {
             return $result;
         }
 
@@ -54,36 +56,24 @@ class ExifExtractorService
             // Focal Length
             if (isset($exif['EXIF']['FocalLength'])) {
                 $focal = $exif['EXIF']['FocalLength'];
-                if (is_array($focal)) {
-                    $result['focal_length'] = $focal[0] . 'mm';
-                } else {
-                    $result['focal_length'] = $focal . 'mm';
-                }
+                $result['focal_length'] = is_array($focal) ? $focal[0].'mm' : $focal.'mm';
             }
 
             // Aperture
             if (isset($exif['EXIF']['FNumber'])) {
                 $aperture = $exif['EXIF']['FNumber'];
-                if (is_array($aperture)) {
-                    $result['aperture'] = 'f/' . ($aperture[0] / $aperture[1]);
-                } else {
-                    $result['aperture'] = 'f/' . $aperture;
-                }
+                $result['aperture'] = is_array($aperture) ? 'f/'.($aperture[0] / $aperture[1]) : 'f/'.$aperture;
             }
 
             // Shutter Speed
             if (isset($exif['EXIF']['ExposureTime'])) {
                 $shutter = $exif['EXIF']['ExposureTime'];
-                if (is_array($shutter)) {
-                    $result['shutter_speed'] = $shutter[0] . '/' . $shutter[1];
-                } else {
-                    $result['shutter_speed'] = $shutter;
-                }
+                $result['shutter_speed'] = is_array($shutter) ? $shutter[0].'/'.$shutter[1] : $shutter;
             }
 
             // ISO
             if (isset($exif['EXIF']['ISOSpeedRatings'])) {
-                $result['iso'] = 'ISO ' . $exif['EXIF']['ISOSpeedRatings'];
+                $result['iso'] = 'ISO '.$exif['EXIF']['ISOSpeedRatings'];
             }
 
             // Captured Date/Time
@@ -106,7 +96,7 @@ class ExifExtractorService
             }
 
         } catch (\Exception $e) {
-            Log::warning('EXIF extraction failed: ' . $e->getMessage());
+            Log::warning('EXIF extraction failed: '.$e->getMessage());
         }
 
         return $result;
@@ -131,21 +121,22 @@ class ExifExtractorService
 
     private function parseDateTime(?string $dateTime): ?string
     {
-        if (!$dateTime) {
+        if (! $dateTime) {
             return null;
         }
 
         try {
             $timestamp = \DateTime::createFromFormat('Y:m:d H:i:s', $dateTime);
+
             return $timestamp ? $timestamp->format('Y-m-d H:i:s') : null;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return null;
         }
     }
 
     private function convertGpsToDecimal($coordinate, $reference): ?string
     {
-        if (!$coordinate || !is_array($coordinate) || count($coordinate) !== 3) {
+        if (! $coordinate || ! is_array($coordinate) || count($coordinate) !== 3) {
             return null;
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreStatusRequest;
@@ -11,7 +13,7 @@ class StatusController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): void
     {
         //
     }
@@ -19,7 +21,7 @@ class StatusController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): void
     {
         //
     }
@@ -27,7 +29,7 @@ class StatusController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreStatusRequest $request)
+    public function store(StoreStatusRequest $request): void
     {
         //
     }
@@ -35,7 +37,7 @@ class StatusController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Status $status)
+    public function show(Status $status): void
     {
         //
     }
@@ -43,7 +45,7 @@ class StatusController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Status $status)
+    public function edit(Status $status): void
     {
         //
     }
@@ -51,7 +53,7 @@ class StatusController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateStatusRequest $request, Status $status)
+    public function update(UpdateStatusRequest $request, Status $status): void
     {
         //
     }
@@ -59,7 +61,7 @@ class StatusController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Status $status)
+    public function destroy(Status $status): void
     {
         //
     }

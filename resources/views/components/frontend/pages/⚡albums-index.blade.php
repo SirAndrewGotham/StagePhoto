@@ -7,13 +7,13 @@ use App\Models\Album;
 new class extends Component {
     use WithPagination;
 
-    public $currentTeam = null;
+    public $currentTeam;
     public $search = '';
     public $sortBy = 'latest';
     public $viewMode = 'grid';
     public $showOnlyMine = false; // For photographers to see their own albums
 
-    public function mount($currentTeam = null)
+    public function mount($currentTeam = null): void
     {
         $this->currentTeam = $currentTeam;
     }
@@ -35,19 +35,12 @@ new class extends Component {
             $query->where('title', 'like', '%' . $this->search . '%');
         }
 
-        switch ($this->sortBy) {
-            case 'oldest':
-                $query->orderBy('created_at', 'asc');
-                break;
-            case 'most_photos':
-                $query->orderBy('photo_count', 'desc');
-                break;
-            case 'most_views':
-                $query->orderBy('views', 'desc');
-                break;
-            default:
-                $query->orderBy('created_at', 'desc');
-        }
+        match ($this->sortBy) {
+            'oldest' => $query->orderBy('created_at', 'asc'),
+            'most_photos' => $query->orderBy('photo_count', 'desc'),
+            'most_views' => $query->orderBy('views', 'desc'),
+            default => $query->orderBy('created_at', 'desc'),
+        };
 
         return $query->paginate(12);
     }
@@ -61,7 +54,7 @@ new class extends Component {
             ->first();
     }
 
-    public function getPhotographerStatsProperty()
+    public function getPhotographerStatsProperty(): ?array
     {
         if (!auth()->check()) return null;
 
@@ -73,7 +66,7 @@ new class extends Component {
     }
 
     // Photographer actions
-    public function deleteAlbum($albumId)
+    public function deleteAlbum($albumId): void
     {
         if (!auth()->check()) return;
 
@@ -89,7 +82,7 @@ new class extends Component {
         session()->flash('message', 'Album moved to trash');
     }
 
-    public function publishAlbum($albumId)
+    public function publishAlbum($albumId): void
     {
         if (!auth()->check()) return;
 
@@ -109,7 +102,7 @@ new class extends Component {
         session()->flash('message', 'Album published successfully');
     }
 
-    public function unpublishAlbum($albumId)
+    public function unpublishAlbum($albumId): void
     {
         if (!auth()->check()) return;
 
@@ -123,7 +116,7 @@ new class extends Component {
         session()->flash('message', 'Album unpublished');
     }
 
-    public function getStatusBadge($status)
+    public function getStatusBadge($status): string
     {
         return match($status) {
             'pending' => 'bg-yellow-100 text-yellow-800',

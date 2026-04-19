@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
+use App\Models\Album;
+use App\Models\Photo;
 use App\Models\Status;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -62,7 +66,7 @@ class StatusFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'statusable_id' => $album->id,
-            'statusable_type' => 'App\Models\Album',
+            'statusable_type' => Album::class,
         ]);
     }
 
@@ -70,7 +74,7 @@ class StatusFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'statusable_id' => $photo->id,
-            'statusable_type' => 'App\Models\Photo',
+            'statusable_type' => Photo::class,
         ]);
     }
 }

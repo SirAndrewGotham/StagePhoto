@@ -7,8 +7,8 @@ namespace Database\Seeders;
 use App\Models\Album;
 use App\Models\Category;
 use App\Models\Photo;
-use App\Models\User;
 use App\Models\Status;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -22,14 +22,13 @@ class DatabaseSeeder extends Seeder
         $this->call(TagSeeder::class);
 
         // Create a test photographer
-        $photographer = User::first();
-        if (!$photographer) {
-            $photographer = User::create([
+        $photographer = User::firstOrCreate(
+            ['email' => 'photographer@stagephoto.test'],
+            [
                 'name' => 'Test Photographer',
-                'email' => 'photographer@stagephoto.test',
                 'password' => bcrypt('password'),
-            ]);
-        }
+            ]
+        );
 
         // Create admin user
         $admin = User::firstOrCreate(
@@ -41,9 +40,9 @@ class DatabaseSeeder extends Seeder
         );
 
         // Create unsorted album
-        Album::create([
+        $unsortedAlbum = Album::create([
             'title' => 'Unsorted',
-            'slug' => 'unsorted-' . $photographer->id,
+            'slug' => 'unsorted-'.$photographer->id,
             'description' => 'Automatically created album for unsorted photos.',
             'photographer_id' => $photographer->id,
             'event_date' => now(),
@@ -54,28 +53,31 @@ class DatabaseSeeder extends Seeder
             'badge_gradient' => 'from-gray-500 to-gray-600',
         ]);
 
+        // Create status history for unsorted album
+        $this->createStatusHistory($unsortedAlbum, 'pending', $photographer, $admin);
+
         // Create albums with different statuses
-        $this->createAlbumsWithPhotos(10, $photographer, 'published');
-        $this->createAlbumsWithPhotos(5, $photographer, 'pending');
-        $this->createAlbumsWithPhotos(3, $photographer, 'approved');
-        $this->createAlbumsWithPhotos(2, $photographer, 'rejected');
+        $this->createAlbumsWithPhotos(10, $photographer, $admin, 'published');
+        $this->createAlbumsWithPhotos(5, $photographer, $admin, 'pending');
+        $this->createAlbumsWithPhotos(3, $photographer, $admin, 'approved');
+        $this->createAlbumsWithPhotos(2, $photographer, $admin, 'rejected');
 
         // Create featured published albums
-        $this->createAlbumsWithPhotos(5, $photographer, 'published', true);
+        $this->createAlbumsWithPhotos(5, $photographer, $admin, 'published', true);
 
         // Create specific genre albums
         $genres = ['rock', 'metal', 'jazz', 'classical', 'folk', 'drama', 'ballet', 'opera'];
         foreach ($genres as $genre) {
-            $this->createAlbumsForGenre(3, $photographer, $genre);
+            $this->createAlbumsForGenre(3, $photographer, $admin, $genre);
         }
 
         $this->command->info('✓ Database seeding completed successfully!');
-        $this->command->info('Total albums: ' . Album::count());
-        $this->command->info('Total photos: ' . Photo::count());
-        $this->command->info('Total status records: ' . Status::count());
+        $this->command->info('Total albums: '.Album::count());
+        $this->command->info('Total photos: '.Photo::count());
+        $this->command->info('Total status records: '.Status::count());
     }
 
-    private function createAlbumsWithPhotos(int $count, User $photographer, string $status, bool $featured = false): void
+    private function createAlbumsWithPhotos(int $count, User $photographer, User $admin, string $status, bool $featured = false): void
     {
         for ($i = 0; $i < $count; $i++) {
             $album = Album::factory()
@@ -88,14 +90,14 @@ class DatabaseSeeder extends Seeder
             }
 
             // Attach random categories
-            $categories = Category::inRandomOrder()->limit(rand(1, 2))->pluck('id');
+            $categories = Category::inRandomOrder()->limit(random_int(1, 2))->pluck('id');
             $album->categories()->attach($categories);
 
-            // Create status history
-            $this->createStatusHistory($album, $status);
+            // Create status history for album
+            $this->createStatusHistory($album, $status, $photographer, $admin);
 
             // Create photos
-            $photoCount = rand(5, 20);
+            $photoCount = random_int(5, 20);
             for ($j = 0; $j < $photoCount; $j++) {
                 $photo = Photo::factory()
                     ->forAlbum($album)
@@ -105,20 +107,21 @@ class DatabaseSeeder extends Seeder
                         'is_featured' => $j === 0,
                     ]);
 
-                // Create photo status history
-                $this->createStatusHistory($photo, $status);
+                // Create status history for photo
+                $this->createStatusHistory($photo, $status, $photographer, $admin);
             }
 
             $album->update(['photo_count' => $photoCount]);
         }
     }
 
-    private function createAlbumsForGenre(int $count, User $photographer, string $genreSlug): void
+    private function createAlbumsForGenre(int $count, User $photographer, User $admin, string $genreSlug): void
     {
         $category = Category::where('slug', $genreSlug)->first();
 
-        if (!$category) {
+        if (! $category) {
             $this->command->warn("Category '{$genreSlug}' not found, skipping...");
+
             return;
         }
 
@@ -130,67 +133,71 @@ class DatabaseSeeder extends Seeder
 
             $album->categories()->attach($category->id);
 
-            $photoCount = rand(5, 15);
+            // Create status history for album
+            $this->createStatusHistory($album, 'published', $photographer, $admin);
+
+            $photoCount = random_int(5, 15);
             for ($j = 0; $j < $photoCount; $j++) {
-                Photo::factory()
+                $photo = Photo::factory()
                     ->forAlbum($album)
                     ->published()
                     ->create([
                         'sort_order' => $j,
                         'is_featured' => $j === 0,
                     ]);
+
+                // Create status history for photo
+                $this->createStatusHistory($photo, 'published', $photographer, $admin);
             }
 
             $album->update(['photo_count' => $photoCount]);
         }
     }
 
-    private function createStatusHistory($model, string $finalStatus): void
+    private function createStatusHistory($model, string $finalStatus, User $photographer, User $admin): void
     {
-        $admin = User::where('email', 'admin@stagephoto.test')->first();
-        $photographer = User::where('email', 'photographer@stagephoto.test')->first();
+        $statuses = $this->getStatusFlow($finalStatus);
+        $currentDate = now();
 
-        // Always start with pending
-        Status::create([
-            'statusable_id' => $model->id,
-            'statusable_type' => get_class($model),
-            'status' => 'pending',
-            'comment' => 'Initial submission',
-            'changed_by' => $photographer->id,
-            'created_at' => now()->subDays(5),
-        ]);
-
-        if ($finalStatus === 'approved' || $finalStatus === 'published') {
+        foreach ($statuses as $index => $statusData) {
             Status::create([
                 'statusable_id' => $model->id,
-                'statusable_type' => get_class($model),
-                'status' => 'approved',
-                'comment' => 'Approved by admin',
-                'changed_by' => $admin->id,
-                'created_at' => now()->subDays(3),
+                'statusable_type' => $model::class,
+                'status' => $statusData['status'],
+                'comment' => $statusData['comment'],
+                'changed_by' => $statusData['changed_by'] === 'admin' ? $admin->id : $photographer->id,
+                'created_at' => $currentDate->subDays(count($statuses) - $index),
             ]);
         }
+    }
 
-        if ($finalStatus === 'published') {
-            Status::create([
-                'statusable_id' => $model->id,
-                'statusable_type' => get_class($model),
-                'status' => 'published',
-                'comment' => 'Published to public',
-                'changed_by' => $admin->id,
-                'created_at' => now()->subDays(1),
-            ]);
-        }
+    private function getStatusFlow(string $finalStatus): array
+    {
+        $flows = [
+            'pending' => [
+                ['status' => 'pending', 'comment' => 'Initial submission awaiting review', 'changed_by' => 'photographer'],
+            ],
+            'approved' => [
+                ['status' => 'pending', 'comment' => 'Initial submission awaiting review', 'changed_by' => 'photographer'],
+                ['status' => 'approved', 'comment' => 'Approved by administrator', 'changed_by' => 'admin'],
+            ],
+            'published' => [
+                ['status' => 'pending', 'comment' => 'Initial submission awaiting review', 'changed_by' => 'photographer'],
+                ['status' => 'approved', 'comment' => 'Approved by administrator', 'changed_by' => 'admin'],
+                ['status' => 'published', 'comment' => 'Published to public', 'changed_by' => 'admin'],
+            ],
+            'rejected' => [
+                ['status' => 'pending', 'comment' => 'Initial submission awaiting review', 'changed_by' => 'photographer'],
+                ['status' => 'rejected', 'comment' => 'Does not meet quality standards', 'changed_by' => 'admin'],
+            ],
+            'blocked' => [
+                ['status' => 'pending', 'comment' => 'Initial submission awaiting review', 'changed_by' => 'photographer'],
+                ['status' => 'approved', 'comment' => 'Approved by administrator', 'changed_by' => 'admin'],
+                ['status' => 'published', 'comment' => 'Published to public', 'changed_by' => 'admin'],
+                ['status' => 'blocked', 'comment' => 'Blocked due to policy violation', 'changed_by' => 'admin'],
+            ],
+        ];
 
-        if ($finalStatus === 'rejected') {
-            Status::create([
-                'statusable_id' => $model->id,
-                'statusable_type' => get_class($model),
-                'status' => 'rejected',
-                'comment' => 'Does not meet quality standards. Please review guidelines.',
-                'changed_by' => $admin->id,
-                'created_at' => now()->subDays(2),
-            ]);
-        }
+        return $flows[$finalStatus] ?? $flows['pending'];
     }
 }
