@@ -83,3 +83,10 @@ require __DIR__.'/settings.php';
 Route::livewire('/terms', 'frontend.pages.legal.terms')->name('terms');
 Route::livewire('/privacy', 'frontend.pages.legal.privacy')->name('privacy');
 Route::livewire('/guidelines', 'frontend.pages.legal.guidelines')->name('guidelines');
+Route::livewire('/copyright', 'frontend.pages.legal.copyright')->name('copyright');
+Route::livewire('/cookies', 'frontend.pages.legal.cookies')->name('cookies');
+
+// Info pages
+Route::livewire('/for-bands', 'frontend.pages.legal.for-bands')->name('for-bands');
+Route::livewire('/for-theaters', 'frontend.pages.legal.for-theaters')->name('for-theaters');
+Route::livewire('/photographer-guide', 'frontend.pages.legal.photographer-guide')->name('photographer-guide');

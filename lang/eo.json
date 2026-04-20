@@ -183,5 +183,25 @@
     "password_reset_failed": "Ne eblis restarigi pasvorton. La ligilo eble estas malvalida aŭ eksvalidiĝinta.",
     "and": "kaj",
 
-    "community_guidelines": "Komunumaj Gvidlinioj"
+    "album.community_guidelines": "Komunumaj Gvidlinioj",
+
+    "manage_cookie_preferences": "Administri Kuketajn Preferojn",
+    "essential_cookies": "Esencaj Kuketoj",
+    "essential_cookies_desc": "Necesaj por ke la retejo funkciu ĝuste",
+    "always_active": "Ĉiam Aktivaj",
+    "preference_cookies": "Preferaj Kuketoj",
+    "preference_cookies_desc": "Memoras viajn lingvajn preferojn kaj temon",
+    "analytics_cookies": "Analizaj Kuketoj",
+    "analytics_cookies_desc": "Helpas nin kompreni kiel vi uzas la retejon",
+    "marketing_cookies": "Merkataj Kuketoj",
+    "marketing_cookies_desc": "Uzataj por montri rilatajn reklamojn",
+    "save_preferences": "Konservi Preferojn",
+    "accept_all": "Akcepti Ĉiujn",
+    "reject_all": "Malakcepti Ĉiujn",
+    "for_bands_subtitle": "Profesia koncerta fotografio por muzikistoj kaj bandoj",
+    "for_theaters_subtitle": "Profesia teatra fotografio por ejoj kaj produktaĵoj",
+    "photographer_guide_subtitle": "Ĉio, kion vi bezonas scii por sukcesi sur StagePhoto.ru",
+    "ready_to_get_started": "Ĉu preta por komenci?",
+    "join_stagephoto_today": "Aliĝu al StagePhoto.ru Hodiaŭ",
+    "ready_to_start_shooting": "Ĉu preta por komenci foti?"
 }

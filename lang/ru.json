@@ -183,5 +183,25 @@
     "password_reset_failed": "Не удалось сбросить пароль. Возможно, ссылка недействительна или устарела.",
     "and": "и",
 
-    "community_guidelines": "Правила сообщества"
+    "album.community_guidelines": "Правила сообщества",
+
+    "manage_cookie_preferences": "Управление настройками cookie",
+    "essential_cookies": "Необходимые cookie",
+    "essential_cookies_desc": "Требуются для правильной работы сайта",
+    "always_active": "Всегда активны",
+    "preference_cookies": "Cookie предпочтений",
+    "preference_cookies_desc": "Запоминают ваши языковые настройки и тему оформления",
+    "analytics_cookies": "Аналитические cookie",
+    "analytics_cookies_desc": "Помогают нам понять, как вы используете сайт",
+    "marketing_cookies": "Маркетинговые cookie",
+    "marketing_cookies_desc": "Используются для показа релевантной рекламы",
+    "save_preferences": "Сохранить настройки",
+    "accept_all": "Принять все",
+    "reject_all": "Отклонить все",
+    "for_bands_subtitle": "Профессиональная концертная фотография для музыкантов и групп",
+    "for_theaters_subtitle": "Профессиональная театральная фотография для площадок и постановок",
+    "photographer_guide_subtitle": "Все, что нужно знать об успехе на StagePhoto.ru",
+    "ready_to_get_started": "Готовы начать?",
+    "join_stagephoto_today": "Присоединиться к StagePhoto.ru",
+    "ready_to_start_shooting": "Готовы начать съемку?"
 }

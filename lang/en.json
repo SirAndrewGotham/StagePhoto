@@ -183,5 +183,25 @@
     "password_reset_failed": "Unable to reset password. The link may be invalid or expired.",
     "and": "and",
 
-    "community_guidelines": "Community Guidelines"
+    "album.community_guidelines": "Community Guidelines",
+
+    "manage_cookie_preferences": "Manage Cookie Preferences",
+    "essential_cookies": "Essential Cookies",
+    "essential_cookies_desc": "Required for the website to function properly",
+    "always_active": "Always Active",
+    "preference_cookies": "Preference Cookies",
+    "preference_cookies_desc": "Remember your language and theme preferences",
+    "analytics_cookies": "Analytics Cookies",
+    "analytics_cookies_desc": "Help us understand how you use the website",
+    "marketing_cookies": "Marketing Cookies",
+    "marketing_cookies_desc": "Used for relevant advertising",
+    "save_preferences": "Save Preferences",
+    "accept_all": "Accept All",
+    "reject_all": "Reject All",
+    "for_bands_subtitle": "Professional concert photography for musicians and bands",
+    "for_theaters_subtitle": "Professional theater photography for venues and productions",
+    "photographer_guide_subtitle": "Everything you need to know about succeeding on StagePhoto.ru",
+    "ready_to_get_started": "Ready to get started?",
+    "join_stagephoto_today": "Join StagePhoto.ru Today",
+    "ready_to_start_shooting": "Ready to start shooting?"
 }
