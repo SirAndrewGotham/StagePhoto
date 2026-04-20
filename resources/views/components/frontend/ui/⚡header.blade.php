@@ -5,7 +5,7 @@ use Livewire\Attributes\Url;
 use Illuminate\Support\Facades\Auth;
 
 new class extends Component {
-    public $currentTeam = null;
+    public $currentTeam;
 
     public function mount($currentTeam = null): void
     {
@@ -41,7 +41,7 @@ new class extends Component {
         return Auth::user();
     }
 
-    public function logout()
+    public function logout(): void
     {
         Auth::logout();
         session()->invalidate();

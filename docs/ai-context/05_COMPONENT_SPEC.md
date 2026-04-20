@@ -150,7 +150,7 @@ document.addEventListener('alpine:init', () => {
                 // Navigation
                 search: 'Поиск групп, площадок...',
                 signIn: 'Войти',
-                submitWork: 'Добавить работу',
+                submitWork: 'Добавить фото',
                 
                 // Filters
                 all: 'Все',
@@ -184,7 +184,7 @@ document.addEventListener('alpine:init', () => {
                 community: 'Сообщество',
                 legal: 'Правовая информация',
                 connect: 'Контакты',
-                submitWorkLink: 'Добавить работу',
+                submitWorkLink: 'Добавить фото',
                 forBands: 'Для групп',
                 forTheaters: 'Для театров',
                 photographerGuide: 'Гид фотографа',
@@ -208,7 +208,7 @@ document.addEventListener('alpine:init', () => {
                 // Navigation
                 search: 'Search bands, venues...',
                 signIn: 'Sign In',
-                submitWork: 'Submit Work',
+                submitWork: 'Submit a Photo',
                 
                 // Filters
                 all: 'All',
@@ -242,7 +242,7 @@ document.addEventListener('alpine:init', () => {
                 community: 'Community',
                 legal: 'Legal',
                 connect: 'Connect',
-                submitWorkLink: 'Submit Work',
+                submitWorkLink: 'Submit a Photo',
                 forBands: 'For Bands',
                 forTheaters: 'For Theaters',
                 photographerGuide: 'Photographer Guide',
@@ -266,7 +266,7 @@ document.addEventListener('alpine:init', () => {
                 // Navigation
                 search: 'Serĉi bandojn, venuejojn...',
                 signIn: 'Ensaluti',
-                submitWork: 'Sendi Verkon',
+                submitWork: 'Sendi Foton',
                 
                 // Filters
                 all: 'Ĉiuj',
@@ -300,7 +300,7 @@ document.addEventListener('alpine:init', () => {
                 community: 'Komunumo',
                 legal: 'Jura',
                 connect: 'Konekti',
-                submitWorkLink: 'Sendi Verkon',
+                submitWorkLink: 'Sendi Foton',
                 forBands: 'Por Bandoj',
                 forTheaters: 'Por Teatroj',
                 photographerGuide: 'Gvidilo por Fotistoj',

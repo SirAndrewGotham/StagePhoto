@@ -6,7 +6,7 @@
 ## 📌 Core Principles
 1. **Albums-First UX**: Homepage (`/`) = browsable album grid. Zero marketing fluff.
 2. **Community-Driven in General**: Fans admire their idols viewing photographs.
-3. **Community-Driven for Creators**: Photographers submit work. Bands/theaters request photographers.
+3. **Community-Driven for Creators**: Photographers submit work (their photos). Bands/theaters request photographers.
 4. **Photographer-Centric**: Every photographer gets a dedicated portfolio page.
 5. **Performance-First**: Lazy loading, CSS-only animations, minimal JS, CDN-ready images.
 6. **No Promo Homepage**: All "about us", policies, FAQs live in footer/static pages.

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>StagePhoto.ru — Концертная и театральная фотография</title>
   <meta name="description" content="Откройте для себя потрясающую концертную и театральную фотографию.">
-  
+
   <!-- Tailwind CSS 4 -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -33,13 +33,13 @@
       }
     }
   </script>
-  
+
   <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
-  
+
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+
   <style>
     /* TRUE FULL-WIDTH MASONRY - No constraints */
     .masonry-grid {
@@ -52,18 +52,18 @@
     @media (min-width: 1024px) { .masonry-grid { gap: 1.5rem; } }
     @media (min-width: 1440px) { .masonry-grid { gap: 1.75rem; } }
     @media (min-width: 1920px) { .masonry-grid { gap: 2rem; } }
-    
+
     .album-card {
       break-inside: avoid;
     }
-    
+
     .album-cover {
       transition: transform 0.5s ease;
     }
     .group:hover .album-cover {
       transform: scale(1.05);
     }
-    
+
     .filter-pills::-webkit-scrollbar {
       height: 4px;
     }
@@ -77,7 +77,7 @@
     .dark .filter-pills::-webkit-scrollbar-thumb {
       background: #475569;
     }
-    
+
     /* Language switcher active state */
     .lang-btn.active {
       background-color: rgb(234 88 12);
@@ -87,13 +87,13 @@
       background-color: rgb(249 115 22);
       color: white;
     }
-    
+
     [x-cloak] { display: none !important; }
   </style>
 </head>
 
-<body 
-  x-data="{ 
+<body
+  x-data="{
     darkMode: false,
     language: 'ru',
     init() {
@@ -109,11 +109,11 @@
           if (this.darkMode) document.documentElement.classList.add('dark');
         }
       }
-      
+
       // Check stored language
       const storedLang = localStorage.getItem('language');
       if (storedLang) this.language = storedLang;
-      
+
       // Listen for system changes
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
         this.darkMode = e.matches;
@@ -124,13 +124,13 @@
         }
         localStorage.setItem('darkMode', e.matches);
       });
-      
+
       // Watch for changes
       $watch('darkMode', val => {
         val ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark');
         localStorage.setItem('darkMode', val);
       });
-      
+
       $watch('language', val => {
         localStorage.setItem('language', val);
         document.documentElement.lang = val;
@@ -153,7 +153,7 @@
           title: 'StagePhoto.ru — Концертная и театральная фотография',
           search: 'Поиск групп, площадок...',
           signIn: 'Войти',
-          submitWork: 'Добавить работу',
+          submitWork: 'Добавить фото',
           all: 'Все',
           rock: 'Рок',
           metal: 'Метал',
@@ -179,7 +179,7 @@
           community: 'Сообщество',
           legal: 'Правовая информация',
           connect: 'Контакты',
-          submitWorkLink: 'Добавить работу',
+          submitWorkLink: 'Добавить фото',
           forBands: 'Для групп',
           forTheaters: 'Для театров',
           photographerGuide: 'Гид фотографа',
@@ -203,7 +203,7 @@
           title: 'StagePhoto.ru — Concert & Theater Photography',
           search: 'Search bands, venues...',
           signIn: 'Sign In',
-          submitWork: 'Submit Work',
+          submitWork: 'Submit a Photo',
           all: 'All',
           rock: 'Rock',
           metal: 'Metal',
@@ -229,7 +229,7 @@
           community: 'Community',
           legal: 'Legal',
           connect: 'Connect',
-          submitWorkLink: 'Submit Work',
+          submitWorkLink: 'Submit a Photo',
           forBands: 'For Bands',
           forTheaters: 'For Theaters',
           photographerGuide: 'Photographer Guide',
@@ -253,7 +253,7 @@
           title: 'StagePhoto.ru — Koncerta kaj Teatra Fotografio',
           search: 'Serĉi bandojn, venuejojn...',
           signIn: 'Ensaluti',
-          submitWork: 'Sendi Verkon',
+          submitWork: 'Sendi Foton',
           all: 'Ĉiuj',
           rock: 'Roko',
           metal: 'Metalo',
@@ -279,7 +279,7 @@
           community: 'Komunumo',
           legal: 'Jura',
           connect: 'Konekti',
-          submitWorkLink: 'Sendi Verkon',
+          submitWorkLink: 'Sendi Foton',
           forBands: 'Por Bandoj',
           forTheaters: 'Por Teatroj',
           photographerGuide: 'Gvidilo por Fotistoj',
@@ -316,13 +316,13 @@
         </div>
         <span class="font-bold text-xl tracking-tight">StagePhoto<span class="text-stage-500">.ru</span></span>
       </a>
-      
+
       <!-- Right Actions -->
       <div class="flex items-center gap-2 sm:gap-3">
         <!-- Search (desktop) -->
         <div class="hidden md:block relative">
-          <input 
-            type="search" 
+          <input
+            type="search"
             x-bind:placeholder="t('search')"
             class="pl-10 pr-4 py-2 w-64 lg:w-72 text-sm border border-gray-300 dark:border-gray-700 rounded-xl bg-gray-100 dark:bg-gray-800 focus:ring-2 focus:ring-stage-500 focus:border-transparent transition-all"
           >
@@ -330,10 +330,10 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
           </svg>
         </div>
-        
+
         <!-- Language Switcher -->
         <div class="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl p-1 gap-1">
-          <button 
+          <button
             @click="setLanguage('ru')"
             class="lang-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all"
             :class="{ 'active': language === 'ru', 'text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50': language !== 'ru' }"
@@ -341,7 +341,7 @@
           >
             RU
           </button>
-          <button 
+          <button
             @click="setLanguage('en')"
             class="lang-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all"
             :class="{ 'active': language === 'en', 'text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50': language !== 'en' }"
@@ -349,7 +349,7 @@
           >
             EN
           </button>
-          <button 
+          <button
             @click="setLanguage('eo')"
             class="lang-btn px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all"
             :class="{ 'active': language === 'eo', 'text-gray-700 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50': language !== 'eo' }"
@@ -358,9 +358,9 @@
             EO
           </button>
         </div>
-        
+
         <!-- Dark Mode Toggle -->
-        <button 
+        <button
           @click="toggleDarkMode()"
           class="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           x-bind:aria-label="darkMode ? 'Switch to light mode' : 'Switch to dark mode'"
@@ -372,13 +372,13 @@
             <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
           </svg>
         </button>
-        
+
         <!-- Auth Buttons -->
         <div class="hidden sm:flex items-center gap-2">
           <a href="#" class="px-3 lg:px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-stage-600 dark:hover:text-stage-400 transition-colors" x-text="t('signIn')"></a>
           <a href="#" class="px-3 lg:px-4 py-2 text-sm font-medium text-white bg-stage-600 hover:bg-stage-700 rounded-xl transition-colors shadow-md hover:shadow-lg" x-text="t('submitWork')"></a>
         </div>
-        
+
         <!-- Mobile Menu Button -->
         <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -393,7 +393,7 @@
   <div class="sticky top-16 z-40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 py-3">
     <div class="px-4 sm:px-6 lg:px-8">
       <div class="flex flex-wrap items-center gap-3">
-        
+
         <!-- Genre Pills -->
         <div class="filter-pills flex gap-2 overflow-x-auto pb-1 flex-1 min-w-0">
           <button class="px-3 lg:px-4 py-1.5 rounded-full text-xs lg:text-sm font-medium bg-stage-600 text-white shadow-md whitespace-nowrap" x-text="t('all')"></button>
@@ -406,7 +406,7 @@
           <button class="px-3 lg:px-4 py-1.5 rounded-full text-xs lg:text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors whitespace-nowrap" x-text="t('electronic')"></button>
           <button class="px-3 lg:px-4 py-1.5 rounded-full text-xs lg:text-sm font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors whitespace-nowrap" x-text="t('folk')"></button>
         </div>
-        
+
         <!-- Sort Dropdown -->
         <select class="px-3 py-1.5 text-xs lg:text-sm border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-stage-500 focus:border-transparent min-w-[120px] lg:min-w-[140px]">
           <option x-text="t('mostRecent')"></option>
@@ -414,11 +414,11 @@
           <option x-text="t('topRated')"></option>
           <option x-text="t('newPhotographers')"></option>
         </select>
-        
+
         <!-- Mobile Search -->
         <div class="md:hidden flex-1 min-w-[100px]">
-          <input 
-            type="search" 
+          <input
+            type="search"
             x-bind:placeholder="t('search')"
             class="w-full pl-9 pr-4 py-1.5 text-sm border border-gray-300 dark:border-gray-700 rounded-xl bg-gray-100 dark:bg-gray-800 focus:ring-2 focus:ring-stage-500"
           >
@@ -430,21 +430,21 @@
   <!-- ==================== MAIN CONTENT ==================== -->
   <main>
     <div class="px-4 sm:px-6 lg:px-8 py-6">
-      
+
       <!-- Page Header -->
       <div class="mb-6 flex items-center justify-between">
         <h1 class="text-xl lg:text-2xl font-bold" x-text="t('latestAlbums')"></h1>
         <span class="text-xs sm:text-sm text-gray-500 dark:text-gray-400 hidden sm:inline">1,248 <span x-text="t('albums')"></span> • 42,891 <span x-text="t('photos')"></span></span>
       </div>
-      
+
       <!-- TRUE FULL-WIDTH Masonry Grid -->
       <div class="masonry-grid">
-        
+
         <!-- Album Card 1 -->
         <article class="album-card group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300">
           <div class="relative h-48 overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=600&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=600&q=80"
               alt="Arctic Monkeys"
               class="album-cover w-full h-full object-cover"
               loading="lazy"
@@ -469,12 +469,12 @@
             </div>
           </div>
         </article>
-        
+
         <!-- Album Card 2 -->
         <article class="album-card group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300">
           <div class="relative h-48 overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80"
               alt="Theater"
               class="album-cover w-full h-full object-cover"
               loading="lazy"
@@ -498,12 +498,12 @@
             </div>
           </div>
         </article>
-        
+
         <!-- Album Card 3 -->
         <article class="album-card group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300">
           <div class="relative h-48 overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1459749411177-0473ef716170?auto=format&fit=crop&w=600&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1459749411177-0473ef716170?auto=format&fit=crop&w=600&q=80"
               alt="Festival"
               class="album-cover w-full h-full object-cover"
               loading="lazy"
@@ -528,12 +528,12 @@
             </div>
           </div>
         </article>
-        
+
         <!-- Album Card 4 -->
         <article class="album-card group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300">
           <div class="relative h-48 overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80"
               alt="Jazz"
               class="album-cover w-full h-full object-cover"
               loading="lazy"
@@ -557,12 +557,12 @@
             </div>
           </div>
         </article>
-        
+
         <!-- Album Card 5 -->
         <article class="album-card group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300">
           <div class="relative h-48 overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80"
               alt="Metal"
               class="album-cover w-full h-full object-cover"
               loading="lazy"
@@ -586,12 +586,12 @@
             </div>
           </div>
         </article>
-        
+
         <!-- Album Card 6 -->
         <article class="album-card group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300">
           <div class="relative h-48 overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2f4ae?auto=format&fit=crop&w=600&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2f4ae?auto=format&fit=crop&w=600&q=80"
               alt="Theater Drama"
               class="album-cover w-full h-full object-cover"
               loading="lazy"
@@ -615,12 +615,12 @@
             </div>
           </div>
         </article>
-        
+
         <!-- Album Card 7 -->
         <article class="album-card group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300">
           <div class="relative h-48 overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80"
               alt="Indie Rock"
               class="album-cover w-full h-full object-cover"
               loading="lazy"
@@ -631,7 +631,7 @@
                 <p class="text-xs opacity-90">Nov 18, 2025 • 16 Tons</p>
               </div>
             </div>
-            <span class="absolute top-3 left-3 px-2 py-1 text-xs font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full shadow-lg">👤 YOUR WORK</span>
+            <span class="absolute top-3 left-3 px-2 py-1 text-xs font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full shadow-lg">👤 YOUR PHOTOS</span>
           </div>
           <div class="p-4">
             <h3 class="font-bold text-base lg:text-lg text-gray-900 dark:text-white truncate">Molchat Doma • 16 Tons Club</h3>
@@ -645,12 +645,12 @@
             </div>
           </div>
         </article>
-        
+
         <!-- Album Card 8 -->
         <article class="album-card group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300">
           <div class="relative h-48 overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=600&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=600&q=80"
               alt="Classical"
               class="album-cover w-full h-full object-cover"
               loading="lazy"
@@ -678,8 +678,8 @@
         <!-- Album Card 9 -->
         <article class="album-card group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300">
           <div class="relative h-48 overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1516450360452-93659f5a3f21?auto=format&fit=crop&w=600&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1516450360452-93659f5a3f21?auto=format&fit=crop&w=600&q=80"
               alt="Electronic"
               class="album-cover w-full h-full object-cover"
               loading="lazy"
@@ -707,8 +707,8 @@
         <!-- Album Card 10 -->
         <article class="album-card group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-md hover:shadow-xl transition-all duration-300">
           <div class="relative h-48 overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?auto=format&fit=crop&w=600&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?auto=format&fit=crop&w=600&q=80"
               alt="Folk"
               class="album-cover w-full h-full object-cover"
               loading="lazy"
@@ -732,9 +732,9 @@
             </div>
           </div>
         </article>
-        
+
       </div>
-      
+
       <!-- Load More -->
       <div class="text-center py-8">
         <button class="px-6 py-3 text-sm font-medium text-white bg-gray-900 dark:bg-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 rounded-xl transition-colors shadow-md hover:shadow-lg flex items-center gap-2 mx-auto">
@@ -743,7 +743,7 @@
         </button>
         <p class="mt-3 text-sm text-gray-500 dark:text-gray-400"><span x-text="t('showing')"></span> 10 <span x-text="t('of')"></span> 1,248 <span x-text="t('albums')"></span></p>
       </div>
-      
+
     </div>
   </main>
 
@@ -788,7 +788,7 @@
           </ul>
         </div>
       </div>
-      
+
       <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500 dark:text-gray-400">
         <p>© 2025 StagePhoto.ru</p>
         <div class="flex items-center gap-4">
