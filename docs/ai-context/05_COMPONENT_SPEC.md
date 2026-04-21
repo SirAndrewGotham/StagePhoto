@@ -558,3 +558,26 @@ test('language persists after reload', async ({ page }) => {
     - Photos can be moved to other albums
     - Not visible to site visitors
     - Accessible only in photographer's dashboard
+
+# Livewire 4 SFC Components
+
+## Upload Components
+
+### Album Selector (`⚡album-selector.blade.php`)
+Reusable component for album selection and creation:
+- Displays hierarchical album tree with visual indicators
+- Handles both existing album selection and new album creation
+- Supports parent album selection for sub-albums
+- Includes category selection for new albums
+
+### Upload Form (`⚡upload-form.blade.php`)
+Centralized upload handling for all upload types:
+- Supports single, multiple, and ZIP uploads
+- Integrates with album-selector component
+- Handles validation, processing, and success/error states
+
+### Partial Components
+- `photo-upload-dropzone.blade.php` - Drag-and-drop for photos
+- `zip-upload-dropzone.blade.php` - ZIP file upload with info panel
+- `photo-details-form.blade.php` - Optional metadata form
+- `upload-success-modal.blade.php` - Success/failure feedback modal

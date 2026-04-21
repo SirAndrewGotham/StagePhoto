@@ -23,7 +23,7 @@
 - **Rating system** - 5-star ratings with user persistence
 - **Like system** - Like/unlike comments
 
-### 📸 For Photographers (Updated)
+### 📸 For Photographers
 - **Album management** - Create, edit, publish/unpublish, and delete albums with soft delete
 - **Photo upload** - Single and multiple photo uploads with drag-and-drop support
 - **Image processing** - Automatic WebP conversion and optimization (Intervention Image v4)
@@ -32,6 +32,10 @@
 - **Album covers** - Auto-generates square (800×800) and hero (2000×800) covers
 - **Unsorted album** - Default album for unorganized uploads with bulk organization
 - **Trash management** - Soft delete with restore and permanent delete options
+- - **Multi-level albums** - Create sub-albums under parent albums (unlimited nesting)
+- **Visual hierarchy** - Tree structure display with indentation (📁 for root, └─ for sub-albums)
+- **Parent selection** - Choose parent album when creating new albums
+- **Automatic organization** - Upload directly to any level in the hierarchy
 
 ### 🎯 For Visitors (Updated)
 - **Album browsing** - Browse published albums with grid/list views
@@ -149,24 +153,36 @@ Visit `http://localhost:8000`
 app/
 ├── Livewire/                 # Livewire components
 ├── Models/                   # Eloquent models
+│   └── Album.php            # Supports hierarchical albums (parent_id)
 ├── Services/                 # Business logic services
 │   ├── ImageProcessingService.php
 │   └── UnsortedAlbumService.php
 └── Http/
-    └── Middleware/
-        └── SetLocale.php     # Language detection
+└── Middleware/
+└── SetLocale.php     # Language detection
 
 database/
 ├── factories/                # Model factories
 ├── migrations/               # Database migrations
+│   └── 2026_04_13_092047_create_albums_table.php  # Includes parent_id for hierarchy
 └── seeders/                  # Database seeders
 
 resources/views/
 ├── components/
 │   └── frontend/            # Livewire SFC components
 │       ├── ui/              # UI components
+│       │   ├── ⚡album-selector.blade.php        # Reusable album tree selector
+│       │   ├── ⚡upload-form.blade.php           # Centralized upload logic
+│       │   └── partials/                        # Shared partials
+│       │       ├── photo-upload-dropzone.blade.php
+│       │       ├── zip-upload-dropzone.blade.php
+│       │       ├── photo-details-form.blade.php
+│       │       └── upload-success-modal.blade.php
 │       ├── islands/         # Island components
 │       └── pages/           # Page components
+│           ├── ⚡photo-upload.blade.php          # Single photo upload
+│           ├── ⚡multiple-photo-upload.blade.php # Multiple photos upload
+│           └── ⚡zip-photo-upload.blade.php      # ZIP archive upload
 ├── layouts/                 # Layout templates
 └── livewire/                # Legacy Livewire views
 
@@ -174,11 +190,12 @@ config/
 ├── image.php                # Image processing config
 └── livewire.php             # Livewire configuration
 
-lang/                        # Multi-language files
-├── en/                      # English
-├── ru/                      # Russian
-└── eo/                      # Esperanto
+lang/                        # Multi-language files (RU, EN, EO)
+├── en.json                  # English translations
+├── ru.json                  # Russian translations
+└── eo.json                  # Esperanto translations
 ```
+
 
 ---
 
