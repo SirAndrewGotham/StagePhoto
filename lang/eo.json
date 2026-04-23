@@ -229,5 +229,21 @@
     "photo_description_optional": "Priskribo de foto (malnepra)",
     "selected": "Elektita",
     "zip_extraction_errors": "Eraroj de ZIP-malpakumo:",
-    "photos_uploaded_success_partial": "fotoj sukcese alŝutitaj!"
+    "photos_uploaded_success_partial": "fotoj sukcese alŝutitaj!",
+
+    "contact_info": "Kontaktinformoj",
+    "login_to_see_contacts": "Ensalutu por vidi kontaktinformojn",
+    "story": "Rakonto",
+    "members": "Membroj",
+    "groups": "Grupoj",
+    "tagged_photos": "Etikeditaj Fotoj",
+    "no_dedicated_albums": "Ankoraŭ ne dediĉitaj albumoj",
+    "no_tagged_photos": "Ankoraŭ ne etikeditaj fotoj",
+    "founded": "Fondita",
+    "no_contacts_available": "Neniu havebla kontaktinformo",
+    "filtering_by": "Filtrante laŭ",
+    "back_to_entity": "Reen al Ento",
+    "no_albums_found": "Neniu albumo trovita",
+    "try_adjusting_filters": "Provu ĝustigi viajn filtrilojn aŭ serĉkriteriojn",
+    "clear_all_filters": "Malplenigi ĉiujn filtrilojn"
 }

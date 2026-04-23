@@ -229,5 +229,21 @@
     "photo_description_optional": "Описание фото (необязательно)",
     "selected": "Выбрано",
     "zip_extraction_errors": "Ошибки распаковки ZIP:",
-    "photos_uploaded_success_partial": "фото успешно загружено!"
+    "photos_uploaded_success_partial": "фото успешно загружено!",
+
+    "contact_info": "Контактная информация",
+    "login_to_see_contacts": "Войдите, чтобы увидеть контактную информацию",
+    "story": "История",
+    "members": "Участники",
+    "groups": "Группы",
+    "tagged_photos": "Фотографии с тегами",
+    "no_dedicated_albums": "Пока нет выделенных альбомов",
+    "no_tagged_photos": "Пока нет фотографий с тегами",
+    "founded": "Основана",
+    "no_contacts_available": "Нет доступной контактной информации",
+    "filtering_by": "Фильтр по",
+    "back_to_entity": "Вернуться к сущности",
+    "no_albums_found": "Альбомы не найдены",
+    "try_adjusting_filters": "Попробуйте изменить параметры фильтрации или поиска",
+    "clear_all_filters": "Сбросить все фильтры"
 }

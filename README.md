@@ -7,11 +7,22 @@
 
 **StagePhoto.ru** is a professional platform for concert and theater photography, connecting photographers with fans, bands, and event organizers. Built with Laravel 13 and Livewire 4.
 
+![StagePhoto site prototype](./docs/images/site-index.png)
+
 🌐 **Live Site**: [stagephoto.ru](https://stagephoto.ru)
 
 ---
 
 ## ✨ Features
+
+### 🎭 For Everyone
+
+- **Entity Pages** - Dedicated pages for theaters, bands, and individual artists
+- **Multi-entity Support** - Theaters, musical groups, and individuals each have their own profile pages
+- **Rich Profiles** - Bios, stories, contact information, social links, and media galleries
+- **Hierarchical Relationships** - See which individuals belong to which bands/theaters
+- **Privacy Controls** - Contact information visibility based on user role (public, registered, photographers only)
+- **Multi-language** - Entity profiles support Russian, English, and Esperanto
 
 ### 🖼️ For Visitors
 - **Full-width responsive album grid** - No containers, pure masonry layout
@@ -22,6 +33,8 @@
 - **Comments** - Threaded comments on albums and individual photos
 - **Rating system** - 5-star ratings with user persistence
 - **Like system** - Like/unlike comments
+- **Album browsing** - Browse published albums with grid/list views
+- **Photographer portfolios** - Each photographer has a dedicated albums page
 
 ### 📸 For Photographers
 - **Album management** - Create, edit, publish/unpublish, and delete albums with soft delete
@@ -36,10 +49,6 @@
 - **Visual hierarchy** - Tree structure display with indentation (📁 for root, └─ for sub-albums)
 - **Parent selection** - Choose parent album when creating new albums
 - **Automatic organization** - Upload directly to any level in the hierarchy
-
-### 🎯 For Visitors (Updated)
-- **Album browsing** - Browse published albums with grid/list views
-- **Photographer portfolios** - Each photographer has a dedicated albums page
 
 ### 🎯 For Bands & Organizers
 - **Photographer requests** - Request specific photographers
@@ -153,47 +162,118 @@ Visit `http://localhost:8000`
 app/
 ├── Livewire/                 # Livewire components
 ├── Models/                   # Eloquent models
-│   └── Album.php            # Supports hierarchical albums (parent_id)
-├── Services/                 # Business logic services
-│   ├── ImageProcessingService.php
-│   └── UnsortedAlbumService.php
+│   ├── Entity.php           # Polymorphic entity model
+│   ├── EntityProfile.php    # Multi-language entity profiles
+│   ├── EntityContact.php    # Contact info with visibility
+│   ├── EntityMembership.php # Relationships (individuals in bands/theaters)
+│   ├── Band.php             # Band-specific attributes
+│   ├── Theater.php          # Theater-specific attributes
+│   ├── Individual.php       # Individual-specific attributes
+│   └── ...
+├── Services/
 └── Http/
-└── Middleware/
-└── SetLocale.php     # Language detection
 
 database/
-├── factories/                # Model factories
-├── migrations/               # Database migrations
-│   └── 2026_04_13_092047_create_albums_table.php  # Includes parent_id for hierarchy
-└── seeders/                  # Database seeders
+├── factories/               # Model factories
+├── migrations/              # Database migrations
+│   ├── create_entities_table.php
+│   ├── create_entity_profiles_table.php
+│   ├── create_entity_contacts_table.php
+│   ├── create_entity_memberships_table.php
+│   ├── create_entity_album_table.php
+│   └── create_entity_photos_table.php
+└── seeders/
 
 resources/views/
 ├── components/
-│   └── frontend/            # Livewire SFC components
-│       ├── ui/              # UI components
-│       │   ├── ⚡album-selector.blade.php        # Reusable album tree selector
-│       │   ├── ⚡upload-form.blade.php           # Centralized upload logic
-│       │   └── partials/                        # Shared partials
-│       │       ├── photo-upload-dropzone.blade.php
-│       │       ├── zip-upload-dropzone.blade.php
-│       │       ├── photo-details-form.blade.php
-│       │       └── upload-success-modal.blade.php
-│       ├── islands/         # Island components
-│       └── pages/           # Page components
-│           ├── ⚡photo-upload.blade.php          # Single photo upload
-│           ├── ⚡multiple-photo-upload.blade.php # Multiple photos upload
-│           └── ⚡zip-photo-upload.blade.php      # ZIP archive upload
-├── layouts/                 # Layout templates
-└── livewire/                # Legacy Livewire views
-
-config/
-├── image.php                # Image processing config
-└── livewire.php             # Livewire configuration
+│   └── frontend/
+│       └── pages/
+│           └── persona/
+│               └── ⚡show.blade.php   # Entity page component
+└── ...
 
 lang/                        # Multi-language files (RU, EN, EO)
-├── en.json                  # English translations
-├── ru.json                  # Russian translations
-└── eo.json                  # Esperanto translations
+├── en.json
+├── ru.json
+└── eo.json
+```
+
+## 🎭 Entity System (Theaters, Bands, Individuals)
+
+StagePhoto.ru supports dedicated pages for theaters, musical groups, and individual artists.
+
+### Entity Types
+
+| Type | Description | URL Example |
+|------|-------------|-------------|
+| **Theater** | Performance venues with capacity, founded year, artistic director | `/persona/bolshoi-theatre` |
+| **Band** | Musical groups with genre, formed year, record label | `/persona/kino` |
+| **Individual** | Artists, musicians, actors with biographical information | `/persona/viktor-tsoi` |
+
+### Key Features
+
+- **Multi-language Profiles** - Each entity has profiles in Russian, English, and Esperanto
+- **Contact Privacy** - Contact information visibility based on user role:
+    - `public` - Visible to everyone
+    - `registered` - Visible to logged-in users only
+    - `photographers` - Visible only to verified photographers
+    - `admin` - Visible only to administrators
+- **Relationships** - Track which individuals belong to which bands or theaters
+- **Media Integration** - Link albums and tag individual photos to entities
+- **SEO-friendly URLs** - Clean slugs like `/persona/band-name`
+
+### Database Schema
+
+```sql
+-- Main entity table (polymorphic)
+entities:
+  - id
+  - entityable_id (references band/theater/individual)
+  - entityable_type (class name)
+  - slug (unique)
+  - type (theater/band/individual)
+  - is_published
+  - settings (JSON for privacy preferences)
+
+-- Multi-language profiles
+entity_profiles:
+  - entity_id
+  - locale (ru/en/eo)
+  - name, bio, story
+  - website, social_links (JSON)
+  - email, phone, address
+  - founded_year, genre
+  - avatar_path, cover_path
+
+-- Contact visibility
+entity_contacts:
+  - entity_id
+  - contact_type (email/phone/telegram/vk/instagram)
+  - value
+  - visibility (public/registered/photographers/admin)
+
+-- Relationships (individuals in bands/theaters)
+entity_memberships:
+  - entity_id (individual)
+  - parent_entity_id (band/theater)
+  - role, joined_at, left_at
+
+-- Media links
+entity_album (pivot): entity_id, album_id, relationship_type
+entity_photos (pivot): entity_id, photo_id
+```
+
+### Routes
+
+```php
+// Main entity route
+Route::livewire('/persona/{entity:slug}', 'frontend.pages.persona.⚡show')
+    ->name('persona.show');
+
+// Convenience redirects
+Route::get('/theater/{entity:slug}', fn($slug) => redirect()->route('persona.show', $slug));
+Route::get('/band/{entity:slug}', fn($slug) => redirect()->route('persona.show', $slug));
+Route::get('/artist/{entity:slug}', fn($slug) => redirect()->route('persona.show', $slug));
 ```
 
 
@@ -260,6 +340,14 @@ Supported languages:
 - 🌐 Esperanto
 
 Language switching uses Laravel's localization with JSON files in `/lang`.
+
+### What's Translated
+
+- **UI Elements** - Buttons, labels, navigation, modals
+- **Entity Profiles** - Names, bios, stories for all entities
+- **Legal Pages** - Terms, privacy, guidelines, copyright, cookie settings
+- **Info Pages** - For Bands, For Theaters, Photographer Guide
+- **Upload Components** - All upload interfaces and messages
 
 ---
 

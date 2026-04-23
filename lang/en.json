@@ -229,5 +229,21 @@
     "photo_description_optional": "Photo description (optional)",
     "selected": "Selected",
     "zip_extraction_errors": "ZIP extraction errors:",
-    "photos_uploaded_success_partial": "photos uploaded successfully!"
+    "photos_uploaded_success_partial": "photos uploaded successfully!",
+
+    "contact_info": "Contact Information",
+    "login_to_see_contacts": "Login to see contact information",
+    "story": "Story",
+    "members": "Members",
+    "groups": "Groups",
+    "tagged_photos": "Tagged Photos",
+    "no_dedicated_albums": "No dedicated albums yet",
+    "no_tagged_photos": "No tagged photos yet",
+    "founded": "Founded",
+    "no_contacts_available": "No contact information available",
+    "filtering_by": "Filtering by",
+    "back_to_entity": "Back to Entity",
+    "no_albums_found": "No albums found",
+    "try_adjusting_filters": "Try adjusting your filters or search criteria",
+    "clear_all_filters": "Clear all filters"
 }

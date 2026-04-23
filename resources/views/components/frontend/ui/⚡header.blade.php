@@ -52,7 +52,7 @@ new class extends Component {
 
 ?>
 
-<header class="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+<header class="sticky top-0 h-16 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
     <div class="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <a href="/" class="flex items-center gap-2 group">
             <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-stage-500 to-orange-600 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-orange-500/30 transition-shadow">

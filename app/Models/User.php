@@ -73,6 +73,12 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
+    public function isPhotographer(): bool
+    {
+        // Check if user is photographer (has at least one album)
+        return $this->albums()->exists();
+    }
+
     public function albums()
     {
         return $this->hasMany(Album::class, 'photographer_id');

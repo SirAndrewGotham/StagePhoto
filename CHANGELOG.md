@@ -1,3 +1,13 @@
+### v1.2.0 (Current)
+
+#### Added
+- **Entity System** - Dedicated pages for theaters, bands, and individual artists
+- **Multi-language Entity Profiles** - Support for RU, EN, EO on all entity pages
+- **Privacy-aware Contact System** - Contact visibility based on user roles
+- **Entity Relationships** - Track memberships between individuals and bands/theaters
+- **Media Integration** - Link albums and tag photos to entities
+- **Persona Page** - `/persona/{slug}` endpoint with rich entity profiles
+
 ## [1.1.0] - 2026-04-21
 
 ### Added

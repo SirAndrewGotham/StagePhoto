@@ -183,4 +183,19 @@ class Album extends Model
     {
         return $this->is_published && $this->status === 'published';
     }
+
+    public function isPublished(): bool
+    {
+        return $this->status === 'published';
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function canBePublished(): bool
+    {
+        return in_array($this->status, ['approved', 'published']);
+    }
 }

@@ -15,6 +15,9 @@ new class extends Component {
     #[Url(as: 'type', history: true)]
     public $selectedType = 'all';
 
+    #[Url(as: 'year', history: true)]
+    public $selectedYear;
+
     #[Url(as: 'q', history: true)]
     public $search = '';
 
@@ -34,13 +37,17 @@ new class extends Component {
         $key = "album.categories.{$category['slug']}";
         $translation = __($key);
 
-        // If translation exists (doesn't return the key itself), use it
         if ($translation !== $key) {
             return $translation;
         }
 
-        // Otherwise return the category name from database
         return $category['name'];
+    }
+
+    public function getAvailableYearsProperty(): array
+    {
+        $years = range(date('Y') - 10, date('Y'));
+        return array_reverse($years);
     }
 
     #[Computed]
@@ -55,7 +62,6 @@ new class extends Component {
 
             $genreList = [];
 
-            // Add "All" option
             $genreList[] = [
                 'slug' => 'all',
                 'name' => __('album.all'),
@@ -63,7 +69,6 @@ new class extends Component {
                 'type' => null,
             ];
 
-            // Add categories from database
             foreach ($categories as $category) {
                 $genreList[] = [
                     'slug' => $category['slug'],
@@ -76,7 +81,6 @@ new class extends Component {
             return $genreList;
 
         } catch (\Exception) {
-            // Fallback if database isn't ready
             return [
                 ['slug' => 'all', 'name' => __('album.all'), 'icon' => '🎯'],
                 ['slug' => 'rock', 'name' => __('album.rock'), 'icon' => '🎸'],
@@ -111,8 +115,22 @@ new class extends Component {
     {
         $this->selectedType = $type;
         $this->selectedGenre = 'all';
+        $this->selectedYear = null;
         $this->dispatch('type-changed', type: $type);
         $this->dispatch('genre-changed', genre: 'all');
+        $this->dispatch('year-changed', year: null);
+    }
+
+    public function selectYear($year): void
+    {
+        $this->selectedYear = $year;
+        $this->dispatch('year-changed', year: $year);
+    }
+
+    public function clearYear(): void
+    {
+        $this->selectedYear = null;
+        $this->dispatch('year-changed', year: null);
     }
 
     public function updateSort($value): void
@@ -124,6 +142,32 @@ new class extends Component {
     public function updatedSearch(): void
     {
         $this->dispatch('search-changed', search: $this->search);
+    }
+
+    public function clearAllFilters(): void
+    {
+        $this->selectedGenre = 'all';
+        $this->selectedType = 'all';
+        $this->selectedYear = null;
+        $this->sortBy = 'mostRecent';
+        $this->search = '';
+
+        $this->dispatch('genre-changed', genre: 'all');
+        $this->dispatch('type-changed', type: 'all');
+        $this->dispatch('year-changed', year: null);
+        $this->dispatch('sort-changed', sort: 'mostRecent');
+        $this->dispatch('search-changed', search: '');
+    }
+
+    public function getActiveFiltersCountProperty(): int
+    {
+        $count = 0;
+        if ($this->selectedGenre !== 'all') $count++;
+        if ($this->selectedType !== 'all') $count++;
+        if ($this->selectedYear !== null) $count++;
+        if ($this->sortBy !== 'mostRecent') $count++;
+        if (!empty($this->search)) $count++;
+        return $count;
     }
 };
 
@@ -168,6 +212,27 @@ new class extends Component {
                 @endforeach
             </div>
 
+            <!-- Year Filter Dropdown -->
+            <div class="relative">
+                <select
+                    wire:change="selectYear($event.target.value)"
+                    class="px-3 py-1.5 text-xs lg:text-sm border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-stage-500 focus:border-transparent"
+                >
+                    <option value="">📅 All Years</option>
+                    @foreach($this->availableYears as $year)
+                        <option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>{{ $year }}</option>
+                    @endforeach
+                </select>
+                @if($selectedYear)
+                    <button
+                        wire:click="clearYear"
+                        class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
+                    >
+                        ✕
+                    </button>
+                @endif
+            </div>
+
             <!-- Sort Dropdown -->
             <select
                 wire:change="updateSort($event.target.value)"
@@ -187,6 +252,44 @@ new class extends Component {
                     wire:model.live.debounce.300ms="search"
                     class="w-full pl-9 pr-4 py-1.5 text-sm border border-gray-300 dark:border-gray-700 rounded-xl bg-gray-100 dark:bg-gray-800 focus:ring-2 focus:ring-stage-500"
                 >
+            </div>
+
+            <!-- Active Filters Indicator & Clear Button -->
+            @if($this->activeFiltersCount > 0)
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-500">
+                        {{ $this->activeFiltersCount }} active filter(s)
+                    </span>
+                    <button
+                        wire:click="clearAllFilters"
+                        class="px-2 py-1 text-xs rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition"
+                    >
+                        ✕ Clear all
+                    </button>
+                </div>
+            @endif
+        </div>
+
+        <!-- Desktop Search -->
+        <div class="hidden md:block mt-3">
+            <div class="relative max-w-md">
+                <input
+                    type="search"
+                    placeholder="{{ __('album.search') }}"
+                    wire:model.live.debounce.300ms="search"
+                    class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 dark:border-gray-700 rounded-xl bg-gray-100 dark:bg-gray-800 focus:ring-2 focus:ring-stage-500 focus:border-transparent"
+                >
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                @if(!empty($search))
+                    <button
+                        wire:click="$set('search', '')"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
+                    >
+                        ✕
+                    </button>
+                @endif
             </div>
         </div>
     </div>

@@ -28,7 +28,7 @@ rresources/views/components/frontend/
     └── ⚡home.blade.php                 ← Home page
 ```
 
-### 🌐 Routes (Updated)
+### 🌐 Routes
 
 ### Public Routes
 | Method | URI | Component | Name |
@@ -37,6 +37,14 @@ rresources/views/components/frontend/
 | GET | `/albums` | `frontend.albums-index` | albums.index |
 | GET | `/album/{album:slug}` | `frontend.album-show` | album.show |
 | GET | `/lang/{locale}` | - | lang.switch |
+
+### Entity Routes
+| Method | URI | Name | Description |
+|--------|-----|------|-------------|
+| GET | `/persona/{entity:slug}` | `persona.show` | Entity profile page (theater/band/individual) |
+| GET | `/theater/{slug}` | - | Redirects to persona.show |
+| GET | `/band/{slug}` | - | Redirects to persona.show |
+| GET | `/artist/{slug}` | - | Redirects to persona.show |
 
 ### Protected Routes (auth required)
 | Method | URI | Component | Name |

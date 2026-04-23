@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureTeamMembership;
+use App\Models\Entity;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
@@ -90,3 +91,35 @@ Route::livewire('/cookies', 'frontend.pages.legal.cookies')->name('cookies');
 Route::livewire('/for-bands', 'frontend.pages.legal.for-bands')->name('for-bands');
 Route::livewire('/for-theaters', 'frontend.pages.legal.for-theaters')->name('for-theaters');
 Route::livewire('/photographer-guide', 'frontend.pages.legal.photographer-guide')->name('photographer-guide');
+
+Route::get('/debug-entity/{slug}', function (string $slug): string|array {
+    $entity = Entity::where('slug', $slug)->first();
+
+    if (! $entity) {
+        return 'Entity not found with slug: '.$slug;
+    }
+
+    return [
+        'found' => true,
+        'id' => $entity->id,
+        'slug' => $entity->slug,
+        'type' => $entity->type,
+        'is_published' => $entity->is_published,
+        'has_profile' => (bool) $entity->profile(),
+    ];
+});
+
+// Entity/Persona routes - Direct Livewire SFC
+Route::livewire('/persona/{entity:slug}', 'frontend.pages.persona.⚡show')
+    ->name('persona.show')
+    ->where('entity', '.*'); // Allow all slugs
+
+// Or with type filtering:
+// Route::livewire('/persona/{entityType}/{entity:slug}', 'frontend.pages.persona.⚡show')
+//    ->where('entityType', 'theater|band|individual')
+//    ->name('persona.show');
+
+// Helper redirect for cleaner URLs:
+Route::get('/theater/{entity:slug}', fn ($slug) => redirect()->route('persona.show', ['entity' => $slug, 'entityType' => 'theater']));
+Route::get('/band/{entity:slug}', fn ($slug) => redirect()->route('persona.show', ['entity' => $slug, 'entityType' => 'band']));
+Route::get('/artist/{entity:slug}', fn ($slug) => redirect()->route('persona.show', ['entity' => $slug, 'entityType' => 'individual']));

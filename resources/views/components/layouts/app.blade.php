@@ -25,6 +25,15 @@
     @livewireStyles
 
     <style>
+        /* Global fix for sticky header overlap */
+        .scroll-target {
+            scroll-margin-top: 64px;
+        }
+
+        /* Apply to any element that might be scrolled to */
+        [id] {
+            scroll-margin-top: 64px;
+        }
         .masonry-grid { width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
         .lang-btn.active { background-color: rgb(234 88 12); color: white; }
         .dark .lang-btn.active { background-color: rgb(249 115 22); color: white; }

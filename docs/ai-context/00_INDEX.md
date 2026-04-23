@@ -10,25 +10,27 @@
 - Components located in `resources/views/components/frontend/`
 
 ## 📂 Context Files Index
-
-| File | Purpose | When to Read |
-|------|---------|--------------|
-| `01_PROJECT_VISION.md` | Core principles, target audience, anti-patterns | Always - defines project soul |
-| `02_TECH_STACK.md` | Livewire 4 syntax, configuration, soft deletes, image processing | Before writing any code |
-| `03_DESIGN_SYSTEM.md` | Full-width mandate, colors, dark mode, responsive breakpoints | Before any UI work |
-| `04_UX_RULES.md` | Filter bar, infinite scroll, loading states, accessibility | Before interaction design |
-| `05_COMPONENT_SPEC.md` | Album card, header, footer, request modal, trash manager, photo uploader | Before component creation |
-| `06_ROUTING.md` | File structure, route registration, naming conventions, protected routes | Before creating new pages |
-| `07_AI_WORKFLOW.md` | Prompt templates, anti-patterns, testing checklist, implemented features | For optimal AI collaboration |
+| File                     | Purpose | When to Read |
+|--------------------------|---------|--------------|
+| `01_PROJECT_VISION.md`   | Core principles, target audience, anti-patterns | Always - defines project soul |
+| `02_TECH_STACK.md`       | Livewire 4 syntax, configuration, soft deletes, image processing | Before writing any code |
+| `03_DESIGN_SYSTEM.md`    | Full-width mandate, colors, dark mode, responsive breakpoints | Before any UI work |
+| `04_UX_RULES.md`         | Filter bar, infinite scroll, loading states, accessibility | Before interaction design |
+| `05_COMPONENT_SPEC.md`   | Album card, header, footer, request modal, trash manager, photo uploader | Before component creation |
+| `06_ROUTING.md`          | File structure, route registration, naming conventions, protected routes | Before creating new pages |
+| `07_AI_WORKFLOW.md`      | Prompt templates, anti-patterns, testing checklist, implemented features | For optimal AI collaboration |
 | `08_IMAGE_PROCESSING.md` | Image dimensions, formats, watermarks, processing workflow | When implementing uploads |
+| `09_STATUS_SYSTEM.md`    | Approval workflow, status values, moderation, admin actions | When working with content moderation |
+| `10_ENTITIES.md`         | Theaters, bands, individuals, entity profiles, contact privacy, relationships | When working with personas/entities |
 
 ## 🚀 Quick Start for New AI Session
 
-**Read these 4 files first:**
+**Read these 5 files first:**
 1. `01_PROJECT_VISION.md` - Understand what we're building
 2. `03_DESIGN_SYSTEM.md` - Understand layout constraints (no containers!)
 3. `06_ROUTING.md` - Understand where components live
 4. `08_IMAGE_PROCESSING.md` - Understand image requirements
+5. `09_STATUS_SYSTEM.md` - Understand approval workflow
 
 ## Current Implementation Status (Updated)
 
@@ -54,6 +56,9 @@
 | Unsorted albums | ✅ Complete |
 | Move photos between albums | ✅ Complete |
 | Photographer upload interface | ✅ Complete |
+| Status & approval system | ✅ Complete |
+| Entity system (theaters/bands/individuals) | ✅ Complete |
+| Entity profile pages | ✅ Complete |
 | Admin dashboard | ⏳ Pending |
 
 ## ⚡ Critical Rules (Never Break)
